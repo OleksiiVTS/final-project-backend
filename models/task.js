@@ -3,7 +3,7 @@ import Joi from "joi";
 import { hookError } from "./hooks.js";
 
 const timePattern = /^[0-2][0-3]:[0-5][0-9]$/;
-const datePatterr = /^[0-9]{4}-(0[1-9]|1[0-2])-(0[1-9]|[1-2][0-9]|3[0-1])$/;
+const datePattern = /^[0-9]{4}-(0[1-9]|1[0-2])-(0[1-9]|[1-2][0-9]|3[0-1])$/;
 
 const taskSchema = new Schema(
   {
@@ -29,7 +29,7 @@ const taskSchema = new Schema(
     },
     date: {
       type: String,
-      match: datePatterr,
+      match: datePattern,
       required: [true, "Date name for contact"],
     },
     category: {
@@ -47,10 +47,31 @@ const taskSchema = new Schema(
 
 taskSchema.post("save", hookError);
 
-const Task = model("review", taskSchema);
+const Task = model("task", taskSchema);
 
 export const taskAddSchema = Joi.object({
-  //
+  title: Joi.string()
+    .required()
+    .max(250)
+    .messages({ "any.required": `"title" mast be exist` }),
+  start: Joi.string()
+    .required()
+    .pattern(timePattern)
+    .messages({ "any.required": `"start" mast be exist` }),
+  end: Joi.string()
+    .required()
+    .pattern(timePattern)
+    .messages({ "any.required": `"end" mast be exist` }),
+  priority: Joi.string()
+    .required()
+    .messages({ "any.required": `"priority" mast be exist` }),
+  date: Joi.string()
+    .required()
+    .pattern(datePattern)
+    .messages({ "any.required": `"date" mast be exist` }),
+  category: Joi.string()
+    .required()
+    .messages({ "any.required": `"category" mast be exist` }),
 });
 
 export default Task;
