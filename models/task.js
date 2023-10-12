@@ -2,8 +2,11 @@ import { Schema, model } from "mongoose";
 import Joi from "joi";
 import { hookError } from "./hooks.js";
 
-const timePattern = /^[0-2][0-3]:[0-5][0-9]$/; // /^[00-23]:[00-59]$/
-const datePattern = /^[0-9]{4}-(0[1-9]|1[0-2])-(0[1-9]|[1-2][0-9]|3[0-1])$/; // може це номер?
+// const timePattern = /^[0-2][0-3]:[0-5][0-9]$/; // /^[00-23]:[00-59]$/
+const timePattern = /^(0[0-9]|1[0-9]|2[0-3]):[0-5][0-9]$/;
+// const datePattern = /^[0-9]{4}-(0[1-9]|1[0-2])-(0[1-9]|[1-2][0-9]|3[0-1])$/;
+const datePattern =
+  /^(202[3-9]|20[3-9][0-9])-(0[1-9]|1[0-2])-(0[1-9]|[1-2][0-9]|3[0-1])$/;
 
 const categoryList = ["to-do", "in-progress", "done"];
 const priorityList = ["low", "medium", "high"];
