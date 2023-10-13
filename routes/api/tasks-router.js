@@ -5,7 +5,6 @@ import authenticate from "../../middleware/validation/authenticate.js";
 
 const tasksRouter = express.Router();
 
-// taskRouter.post("/",authenticate, validateTaskAdd, taskController.addTask);
-tasksRouter.post("/", validateTaskAdd, taskController.addTask);
+tasksRouter.post("/", authenticate, validateTaskAdd, taskController.addTask);
 
 export default tasksRouter;

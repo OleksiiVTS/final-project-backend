@@ -2,7 +2,7 @@ import { Schema, model } from "mongoose";
 import Joi from "joi";
 import { hookError } from "./hooks.js";
 
-// const timePattern = /^[0-2][0-3]:[0-5][0-9]$/; // /^[00-23]:[00-59]$/
+// const timePattern = /^[0-2][0-3]:[0-5][0-9]$/;
 const timePattern = /^(0[0-9]|1[0-9]|2[0-3]):[0-5][0-9]$/;
 // const datePattern = /^[0-9]{4}-(0[1-9]|1[0-2])-(0[1-9]|[1-2][0-9]|3[0-1])$/;
 const datePattern =
@@ -59,25 +59,25 @@ export const taskAddSchema = Joi.object({
   title: Joi.string()
     .required()
     .max(250)
-    .messages({ "any.required": `"title" mast be exist` }),
+    .messages({ "any.required": `"title" must be exist` }),
   start: Joi.string()
     .required()
     .pattern(timePattern)
-    .messages({ "any.required": `"start" mast be exist` }),
+    .messages({ "any.required": `"start" must be exist` }),
   end: Joi.string()
     .required()
     .pattern(timePattern)
-    .messages({ "any.required": `"end" mast be exist` }),
+    .messages({ "any.required": `"end" must be exist` }),
   priority: Joi.string()
     .required()
     .valid(...priorityList)
-    .messages({ "any.required": `"priority" mast be exist` }),
+    .messages({ "any.required": `"priority" must be exist` }),
   date: Joi.string()
     .required()
     .pattern(datePattern)
-    .messages({ "any.required": `"date" mast be exist` }),
+    .messages({ "any.required": `"date" must be exist` }),
   category: Joi.string()
     .required()
     .valid(...categoryList)
-    .messages({ "any.required": `"category" mast be exist` }),
+    .messages({ "any.required": `"category" must be exist` }),
 });
