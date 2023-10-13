@@ -9,9 +9,8 @@ const getAllTasks = async (req, res) => {
 const addTask = async (req, res) => {
   const { _id: owner } = req.user;
 
-  console.log("this is add");
   const task = await Task.create({ ...req.body, owner });
-  res.json({ task });
+  res.status(201).json({ task });
 };
 
 const updateTask = async (req, res) => {
