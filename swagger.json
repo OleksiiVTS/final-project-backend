@@ -13,7 +13,7 @@
     { "name": "Tasks", "description": "Tasks endpoints" }
   ],
   "paths": {
-    "/auth/register": {
+    "/users/register": {
       "post": {
         "tags": ["Auth"],
         "summary": "Register a new user",
@@ -51,7 +51,7 @@
         }
       }
     },
-    "/auth/login": {
+    "/users/login": {
       "post": {
         "tags": ["Auth"],
         "summary": "Login an account",
@@ -89,7 +89,7 @@
         }
       }
     },
-    "/auth/logout": {
+    "/users/logout": {
       "post": {
         "tags": ["Auth"],
         "summary": "Logout",
