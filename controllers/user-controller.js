@@ -42,13 +42,13 @@ const userReg = async (req, res) => {
     verificationToken,
   });
 
-  const verifyEmail = {
-    to: email,
-    subject: "Nodemailer test",
-    html: `<a target="_blank" href="${BASE_URL}/api/users/verify/${verificationToken}" >Click to verification</a>`,
-  };
+  // const verifyEmail = {
+  //   to: email,
+  //   subject: "Nodemailer test",
+  //   html: `<a target="_blank" href="${BASE_URL}/api/users/verify/${verificationToken}" >Click to verification</a>`,
+  // };
 
-  await sendEmail(verifyEmail);
+  // await sendEmail(verifyEmail);
 
   res.status(201).json({
     user,
