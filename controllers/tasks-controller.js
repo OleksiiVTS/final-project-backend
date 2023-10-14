@@ -3,6 +3,9 @@ import { HttpError } from "../helpers/index.js";
 import { Task } from "../models/Task.js";
 
 const getAllTasks = async (req, res) => {
+  const { _id: owner } = req.user;
+  const result = await Contact.find({ owner }, "-createdAt -updatedAt");
+  res.json(result);
   //
 };
 

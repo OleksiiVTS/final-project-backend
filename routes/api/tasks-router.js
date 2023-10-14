@@ -9,6 +9,8 @@ import validateMongoDBId from "../../middleware/validation/validateMongoDBId.js"
 
 const tasksRouter = express.Router();
 
+tasksRouter.get("/", authenticate, taskCtrl.getAllTasks);
+
 tasksRouter.post("/", authenticate, validateTaskAdd, taskCtrl.addTask);
 
 tasksRouter.patch(
