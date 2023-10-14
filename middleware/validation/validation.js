@@ -1,6 +1,10 @@
-import { authLoginSchema, authRegisterSchema, userVerifySchema } from "../../models/user.js";
+import {
+  authLoginSchema,
+  authRegisterSchema,
+  userVerifySchema,
+} from "../../models/user.js";
 import { reviewAddSchema } from "../../models/review.js";
-import { taskAddSchema } from "../../models/Task.js";
+import { taskAddSchema, taskUpdateSchema } from "../../models/Task.js";
 import { validateBody } from "../../decorators/index.js";
 
 export const authRegisterValidate = validateBody(authRegisterSchema);
@@ -10,3 +14,4 @@ export const authVerify = validateBody(userVerifySchema);
 
 export const validateReview = validateBody(reviewAddSchema);
 export const validateTaskAdd = validateBody(taskAddSchema);
+export const validateTaskUpdate = validateBody(taskUpdateSchema);
