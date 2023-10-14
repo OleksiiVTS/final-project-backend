@@ -1,0 +1,16 @@
+{
+  "openapi": "3.0.1",
+  "info": {
+    "version": "1.0.0",
+    "title": "GooseTrack",
+    "description": "This is a sample documentation for the GooseTrack application based on OpenApi 3.0.1. This documentation provides access to the core functionalities of our service. The API enables you to retrieve and send data, manage resources, and interact with the application. We continuously work on improving it, updating, and expanding its functionality. Please review our documentation to learn how to get started with our API and seamlessly integrate it into your projects."
+  },
+  "consumes": ["application/json"],
+  "produces": ["application/json"],
+  "servers": [{ "url": "http://localhost:4000" }],
+  "tags": [
+    { "name": "Auth", "description": "Authorization endpoints" },
+    { "name": "Reviews", "description": "Reviews endpoints" },
+    { "name": "Tasks", "description": "Tasks endpoints" }
+  ]
+}
