@@ -13,7 +13,7 @@
     { "name": "Tasks", "description": "Tasks endpoints" }
   ],
   "paths": {
-    "/auth/register": {
+    "/users/register": {
       "post": {
         "tags": ["Auth"],
         "summary": "Register a new user",
@@ -51,7 +51,7 @@
         }
       }
     },
-    "/auth/login": {
+    "/users/login": {
       "post": {
         "tags": ["Auth"],
         "summary": "Login an account",
@@ -89,7 +89,7 @@
         }
       }
     },
-    "/auth/logout": {
+    "/users/logout": {
       "post": {
         "tags": ["Auth"],
         "summary": "Logout",
@@ -106,6 +106,124 @@
           },
           "401": {
             "description": "Unathorized",
+            "content": {}
+          }
+        }
+      }
+    },
+    "/users/current": {
+      "get": {
+        "tags": ["Auth"],
+        "summary": "Get info about current user",
+        "security": [{ "Bearer": [] }],
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "Operation success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#components/schemas/CurrentResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {}
+          }
+        }
+      }
+    },
+    "/users/verify/{verificationToken}": {
+      "get": {
+        "tags": ["Auth"],
+        "summary": "Verification user's email",
+        "parameters": [
+          {
+            "name": "verificationToken",
+            "in": "path",
+            "required": true,
+            "description": "Verification token received by the user",
+            "schema": {
+              "$ref": "#components/schemas/VerifyRequest"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Verification successfull",
+            "content": {}
+          },
+          "400": {
+            "description": "Bad request (invalid request body)",
+            "content": {}
+          },
+          "404": {
+            "description": "Email not found",
+            "content": {}
+          }
+        }
+      }
+    },
+    "/users/verify": {
+      "post": {
+        "tags": ["Auth"],
+        "summary": "Resend verification user's email",
+        "parameters": [],
+        "requestBody": {
+          "description": "Vefify's object",
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#components/schemas/VerifyResendRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Verification email sent",
+            "content": {}
+          },
+          "400": {
+            "description": "Bad request (invalid request body)",
+            "content": {}
+          }
+        }
+      }
+    },
+    "/users/avatars": {
+      "patch": {
+        "tags": ["Auth"],
+        "summary": "Update user's avatar",
+        "parameters": [],
+        "security": [{ "Bearer": [] }],
+        "requestBody": {
+          "description": "Update's object",
+          "required": true,
+          "content": {
+            "multipart/form-data": {
+              "schema": {
+                "$ref": "#components/schemas/UpdateAvatarRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Update avatar success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#components/schemas/UpdateAvatarResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad request (invalid request body)",
             "content": {}
           }
         }
@@ -149,22 +267,6 @@
             "description": "User's email",
             "format": "email",
             "pattern": "^[\\w-\\.]+@([\\w-]+\\.)+[\\w-]{2,4}$"
-          },
-          "password": {
-            "type": "string",
-            "description": "User's password"
-          },
-          "avatarURL": {
-            "type": "string",
-            "description": "User's avatar"
-          },
-          "public_id": {
-            "type": "string",
-            "descriprion": "User's public_id"
-          },
-          "verificationToken": {
-            "type": "string",
-            "description": "User's verification token"
           }
         }
       },
@@ -192,6 +294,81 @@
           "token": {
             "type": "string",
             "example": "Token"
+          }
+        }
+      },
+      "VerifyRequest": {
+        "type": "object",
+        "required": true,
+        "properties": {
+          "verificationToken": {
+            "type": "string"
+          }
+        }
+      },
+      "VerifyResendRequest": {
+        "type": "object",
+        "required": true,
+        "properties": {
+          "email": {
+            "type": "string",
+            "description": "User's email",
+            "format": "email",
+            "example": "nadiia.moe.12@mail.com",
+            "pattern": "^[\\w-\\.]+@([\\w-]+\\.)+[\\w-]{2,4}$"
+          }
+        }
+      },
+      "UpdateAvatarRequest": {
+        "type": "object",
+        "properties": {
+          "path": {
+            "type": "string",
+            "format": "binary",
+            "required": true
+          }
+        }
+      },
+      "UpdateAvatarResponse": {
+        "type": "object",
+        "properties": {
+          "newAvatarURL": {
+            "type": "string",
+            "example": "http://avatar_link.com"
+          }
+        }
+      },
+      "CurrentResponse": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "description": "User's name"
+          },
+          "email": {
+            "type": "string",
+            "description": "User's email",
+            "format": "email",
+            "pattern": "^[\\w-\\.]+@([\\w-]+\\.)+[\\w-]{2,4}$"
+          },
+          "phone": {
+            "type": "string",
+            "description": "User's phone",
+            "pattern": "/^+380d{9}$/"
+          },
+          "skype": {
+            "type": "string",
+            "description": "User's skype number",
+            "maxLength": 16
+          },
+          "birthday": {
+            "type": "string",
+            "description": "User's birthday"
+          },
+          "theme": {
+            "type": "string",
+            "description": "User's UI theme",
+            "enum": ["dark", "light"]
           }
         }
       }

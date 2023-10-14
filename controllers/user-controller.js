@@ -133,8 +133,8 @@ const userChangeAvatar = async (req, res) => {
 };
 
 const getCurrent = async (req, res) => {
-  const { email, subscription } = req.user;
-  res.status(200).json({ email, subscription });
+  const { name, email, phone, skype, birthday, theme } = req.user;
+  res.status(200).json({ name, email, phone, skype, birthday, theme });
 };
 
 const userLogout = async (req, res) => {
