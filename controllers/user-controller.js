@@ -10,35 +10,34 @@ import { ctrlWrapper } from "../decorators/index.js";
 
 const { JWT_SECRET, BASE_URL } = process.env;
 
-const userReg = async (req, res) => {
+const userRegister = async (req, res) => {
   const { email, password } = req.body;
   const isUser = await User.findOne({ email });
   if (isUser) {
     throw HttpError(409, `"Email in use"`);
   }
-  const { path: oldPath, filename } = req.file;
-  await Jimp.read(oldPath)
-    .then((image) => {
-      image.resize(256, 256);
-    })
-    .catch((err) => {
-      err.message;
-    });
-  const { url: avatarURL, public_id } = await cloudinary.uploader.upload(
-    oldPath,
-    {
-      folder: "avatarUser",
-    }
-  );
-  await fs.unlink(oldPath);
+
+  // const { path: oldPath, filename } = req.file;
+  // await Jimp.read(oldPath)
+  //   .then((image) => {
+  //     image.resize(256, 256);
+  //   })
+  //   .catch((err) => {
+  //     err.message;
+  //   });
+  // const { url: avatarURL, public_id } = await cloudinary.uploader.upload(oldPath, {
+  //   folder: "avatarUser",
+  // });
+  // await fs.unlink(oldPath);
+
   const hashPassword = await bcrypt.hash(password, 10);
   const verificationToken = nanoid();
 
   const user = await User.create({
     ...req.body,
     password: hashPassword,
-    avatarURL,
-    public_id,
+    // avatarURL,
+    // public_id,
     verificationToken,
   });
 
@@ -51,7 +50,8 @@ const userReg = async (req, res) => {
   // await sendEmail(verifyEmail);
 
   res.status(201).json({
-    user,
+    name: user.name,
+    email: user.email,
   });
 };
 
@@ -69,7 +69,7 @@ const getVerification = async (req, res) => {
   });
 };
 
-const userLog = async (req, res) => {
+const userLogin = async (req, res) => {
   const { email, password } = req.body;
   const user = await User.findOne({ email });
   if (!user) {
@@ -89,11 +89,6 @@ const userLog = async (req, res) => {
 
   res.status(200).json({
     token,
-    user: {
-      email: user.email,
-      subscription: user.subscription,
-      avatarURL: user.avatarURL,
-    },
   });
 };
 
@@ -125,12 +120,9 @@ const userChangeAvatar = async (req, res) => {
     .catch((err) => {
       err.message;
     });
-  const { url: newAvatarURL, public_id } = await cloudinary.uploader.upload(
-    filePath,
-    {
-      folder: "avatarUser",
-    }
-  );
+  const { url: newAvatarURL, public_id } = await cloudinary.uploader.upload(filePath, {
+    folder: "avatarUser",
+  });
   await fs.unlink(filePath);
   await cloudinary.uploader.destroy(p_id).then((result) => console.log(result));
   await User.findByIdAndUpdate(_id, {
@@ -145,9 +137,9 @@ const getCurrent = async (req, res) => {
   res.status(200).json({ email, subscription });
 };
 
-const logOut = async (req, res) => {
+const userLogout = async (req, res) => {
   const { _id } = req.user;
-  await User.findByIdAndUpdate(_id, { token: "" });
+  await User.findByIdAndUpdate(_id, { token: null });
   res.status(204).json({
     message: `"Logout success"`,
   });
@@ -168,10 +160,10 @@ const changeSubscript = async (req, res) => {
 };
 
 export default {
-  userReg: ctrlWrapper(userReg),
-  userLog: ctrlWrapper(userLog),
+  userRegister: ctrlWrapper(userRegister),
+  userLogin: ctrlWrapper(userLogin),
   getCurrent: ctrlWrapper(getCurrent),
-  logOut: ctrlWrapper(logOut),
+  userLogout: ctrlWrapper(userLogout),
   changeSubscript: ctrlWrapper(changeSubscript),
   userChangeAvatar: ctrlWrapper(userChangeAvatar),
   getVerification: ctrlWrapper(getVerification),
