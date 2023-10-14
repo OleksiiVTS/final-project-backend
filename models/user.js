@@ -66,6 +66,17 @@ userSchema.post("save", hookError);
 
 const User = model("user", userSchema);
 
+export const authRegisterSchema = Joi.object({
+  name: Joi.string().required().messages({ "any.required": `"name" mast be exist` }),
+  email: Joi.string().pattern(emailPattern).required().messages({ "any.required": `"email" mast be exist` }),
+  password: Joi.string().min(8).required().messages({ "any.required": `"password" mast be exist` }),
+});
+
+export const authLoginSchema = Joi.object({
+  email: Joi.string().pattern(emailPattern).required().messages({ "any.required": `"email" mast be exist` }),
+  password: Joi.string().min(8).required().messages({ "any.required": `"password" mast be exist` }),
+});
+
 export const userSingSchema = Joi.object({
   email: Joi.string().pattern(emailPattern).required().messages({ "any.required": `"email" mast be exist` }),
   password: Joi.string().min(8).required().messages({ "any.required": `"password" mast be exist` }),
