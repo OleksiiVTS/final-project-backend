@@ -69,7 +69,7 @@ const getVerification = async (req, res) => {
   });
 };
 
-const userLog = async (req, res) => {
+const userLogin = async (req, res) => {
   const { email, password } = req.body;
   const user = await User.findOne({ email });
   if (!user) {
@@ -89,11 +89,6 @@ const userLog = async (req, res) => {
 
   res.status(200).json({
     token,
-    user: {
-      email: user.email,
-      subscription: user.subscription,
-      avatarURL: user.avatarURL,
-    },
   });
 };
 
@@ -142,9 +137,9 @@ const getCurrent = async (req, res) => {
   res.status(200).json({ email, subscription });
 };
 
-const logOut = async (req, res) => {
+const userLogout = async (req, res) => {
   const { _id } = req.user;
-  await User.findByIdAndUpdate(_id, { token: "" });
+  await User.findByIdAndUpdate(_id, { token: null });
   res.status(204).json({
     message: `"Logout success"`,
   });
@@ -166,9 +161,9 @@ const changeSubscript = async (req, res) => {
 
 export default {
   userRegister: ctrlWrapper(userRegister),
-  userLog: ctrlWrapper(userLog),
+  userLogin: ctrlWrapper(userLogin),
   getCurrent: ctrlWrapper(getCurrent),
-  logOut: ctrlWrapper(logOut),
+  userLogout: ctrlWrapper(userLogout),
   changeSubscript: ctrlWrapper(changeSubscript),
   userChangeAvatar: ctrlWrapper(userChangeAvatar),
   getVerification: ctrlWrapper(getVerification),

@@ -6,17 +6,17 @@ import { upload } from "../../middleware/validation/upload.js";
 
 const authRouter = express.Router();
 
-authRouter.post("/register", upload.single("avatar"), authRegisterValidate, ausController.userRegister);
+authRouter.post("/register", authRegisterValidate, ausController.userRegister);
 
 authRouter.get("/verify/:verificationToken", ausController.getVerification);
 
 authRouter.post("/verify", authVerify, ausController.repeatVerify);
 
-authRouter.post("/login", authLoginValidate, ausController.userLog);
+authRouter.post("/login", authLoginValidate, ausController.userLogin);
 
 authRouter.patch("/avatars", authenticate, upload.single("avatar"), ausController.userChangeAvatar);
 
-authRouter.post("/logout", authenticate, ausController.logOut);
+authRouter.post("/logout", authenticate, ausController.userLogout);
 
 authRouter.get("/current", authenticate, ausController.getCurrent);
 
