@@ -8,5 +8,7 @@ export const authLoginValidate = validateBody(authLoginSchema);
 
 // export const ausValidate = validateBody(userSingSchema);
 export const ausVerify = validateBody(userVerifySchema);
-export const reviewValidate = validateBody(reviewAddSchema);
+
+export const validateReview = validateBody(reviewAddSchema);
 export const validateTaskAdd = validateBody(taskAddSchema);
+
