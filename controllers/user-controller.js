@@ -10,35 +10,34 @@ import { ctrlWrapper } from "../decorators/index.js";
 
 const { JWT_SECRET, BASE_URL } = process.env;
 
-const userReg = async (req, res) => {
+const userRegister = async (req, res) => {
   const { email, password } = req.body;
   const isUser = await User.findOne({ email });
   if (isUser) {
     throw HttpError(409, `"Email in use"`);
   }
-  const { path: oldPath, filename } = req.file;
-  await Jimp.read(oldPath)
-    .then((image) => {
-      image.resize(256, 256);
-    })
-    .catch((err) => {
-      err.message;
-    });
-  const { url: avatarURL, public_id } = await cloudinary.uploader.upload(
-    oldPath,
-    {
-      folder: "avatarUser",
-    }
-  );
-  await fs.unlink(oldPath);
+
+  // const { path: oldPath, filename } = req.file;
+  // await Jimp.read(oldPath)
+  //   .then((image) => {
+  //     image.resize(256, 256);
+  //   })
+  //   .catch((err) => {
+  //     err.message;
+  //   });
+  // const { url: avatarURL, public_id } = await cloudinary.uploader.upload(oldPath, {
+  //   folder: "avatarUser",
+  // });
+  // await fs.unlink(oldPath);
+
   const hashPassword = await bcrypt.hash(password, 10);
   const verificationToken = nanoid();
 
   const user = await User.create({
     ...req.body,
     password: hashPassword,
-    avatarURL,
-    public_id,
+    // avatarURL,
+    // public_id,
     verificationToken,
   });
 
@@ -51,7 +50,8 @@ const userReg = async (req, res) => {
   // await sendEmail(verifyEmail);
 
   res.status(201).json({
-    user,
+    name: user.name,
+    email: user.email,
   });
 };
 
@@ -125,12 +125,9 @@ const userChangeAvatar = async (req, res) => {
     .catch((err) => {
       err.message;
     });
-  const { url: newAvatarURL, public_id } = await cloudinary.uploader.upload(
-    filePath,
-    {
-      folder: "avatarUser",
-    }
-  );
+  const { url: newAvatarURL, public_id } = await cloudinary.uploader.upload(filePath, {
+    folder: "avatarUser",
+  });
   await fs.unlink(filePath);
   await cloudinary.uploader.destroy(p_id).then((result) => console.log(result));
   await User.findByIdAndUpdate(_id, {
@@ -168,7 +165,7 @@ const changeSubscript = async (req, res) => {
 };
 
 export default {
-  userReg: ctrlWrapper(userReg),
+  userRegister: ctrlWrapper(userRegister),
   userLog: ctrlWrapper(userLog),
   getCurrent: ctrlWrapper(getCurrent),
   logOut: ctrlWrapper(logOut),

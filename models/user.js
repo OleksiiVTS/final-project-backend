@@ -1,16 +1,20 @@
 import { Schema, model } from "mongoose";
 import Joi from "joi";
 import { hookError, runValidateAtUpdate } from "./hooks.js";
+import { getCurrentDate } from "../helpers/index.js";
 
 const emailPattern = /^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/;
 const phonePattern = /^\+380\d{9}$/;
 const datePattern = /^\d{4}-(0[1-9]|1[0-2])-(0[1-9]|[12][0-9]|3[01])$/;
+
+const userBirhday = getCurrentDate();
 
 const userSchema = new Schema(
   {
     name: {
       type: String,
       required: [true, "Name is required"],
+      minLength: 4,
     },
     email: {
       type: String,
@@ -21,18 +25,23 @@ const userSchema = new Schema(
     password: {
       type: String,
       required: [true, "Set password for user"],
+      minLength: 8,
     },
     phone: {
       type: String,
       pattern: phonePattern,
       unique: true,
+      default: "+380-XXX-XXX-XXX",
     },
     skype: {
       type: String,
+      default: null,
+      maxLength: 16,
     },
     birthday: {
       type: String,
       pattern: datePattern,
+      default: userBirhday,
     },
     avatarURL: {
       type: String,
@@ -67,7 +76,7 @@ userSchema.post("save", hookError);
 const User = model("user", userSchema);
 
 export const authRegisterSchema = Joi.object({
-  name: Joi.string().required().messages({ "any.required": `"name" mast be exist` }),
+  name: Joi.string().min(4).required().messages({ "any.required": `"name" mast be exist` }),
   email: Joi.string().pattern(emailPattern).required().messages({ "any.required": `"email" mast be exist` }),
   password: Joi.string().min(8).required().messages({ "any.required": `"password" mast be exist` }),
 });

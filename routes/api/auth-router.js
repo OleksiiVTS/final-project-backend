@@ -6,7 +6,7 @@ import { upload } from "../../middleware/validation/upload.js";
 
 const authRouter = express.Router();
 
-authRouter.post("/register", upload.single("avatar"), authRegisterValidate, ausController.userReg);
+authRouter.post("/register", upload.single("avatar"), authRegisterValidate, ausController.userRegister);
 
 authRouter.get("/verify/:verificationToken", ausController.getVerification);
 
