@@ -31,7 +31,7 @@ const userSchema = new Schema(
       type: String,
       pattern: phonePattern,
       unique: true,
-      default: "+380-XXX-XXX-XXX",
+      default: null,
     },
     skype: {
       type: String,
