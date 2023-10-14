@@ -6,9 +6,7 @@ import { validateBody } from "../../decorators/index.js";
 export const authRegisterValidate = validateBody(authRegisterSchema);
 export const authLoginValidate = validateBody(authLoginSchema);
 
-// export const ausValidate = validateBody(userSingSchema);
-export const ausVerify = validateBody(userVerifySchema);
+export const authVerify = validateBody(userVerifySchema);
 
 export const validateReview = validateBody(reviewAddSchema);
 export const validateTaskAdd = validateBody(taskAddSchema);
-
