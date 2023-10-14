@@ -77,12 +77,6 @@ export const authLoginSchema = Joi.object({
   password: Joi.string().min(8).required().messages({ "any.required": `"password" mast be exist` }),
 });
 
-export const userSingSchema = Joi.object({
-  email: Joi.string().pattern(emailPattern).required().messages({ "any.required": `"email" mast be exist` }),
-  password: Joi.string().min(8).required().messages({ "any.required": `"password" mast be exist` }),
-  subscription: Joi.string(),
-});
-
 export const userVerifySchema = Joi.object({
   email: Joi.string().pattern(emailPattern).required().messages({ message: "missing required field email" }),
 });
