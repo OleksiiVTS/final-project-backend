@@ -8,14 +8,19 @@ const getAllTasks = async (req, res) => {
 
 const addTask = async (req, res) => {
   const { _id: owner } = req.user;
+  const { title } = req.body;
 
-  const task = await Task.create({ ...req.body, owner });
+  const task = await Task.create({ ...req.body, title: title.trim(), owner });
   res.status(201).json({ task });
 };
 
 const updateTask = async (req, res) => {
   const { _id: owner } = req.user;
   const { taskId } = req.params;
+
+  if (req.body.title) {
+    req.body = { ...req.body, title: req.body.title.trim() };
+  }
 
   const result = await Task.findOneAndUpdate({ _id: taskId, owner }, req.body, {
     new: true,
