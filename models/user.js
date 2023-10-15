@@ -54,6 +54,7 @@ const userSchema = new Schema(
     },
     public_id: {
       type: String,
+      default: null,
     },
     token: {
       type: String,
