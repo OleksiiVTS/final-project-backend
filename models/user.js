@@ -1,6 +1,6 @@
 import { Schema, model } from "mongoose";
 import Joi from "joi";
-import { hookError, runValidateAtUpdate } from "./hooks.js";
+import { hookError } from "./hooks.js";
 import { getCurrentDate } from "../helpers/index.js";
 
 const emailPattern = /^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/;
@@ -78,14 +78,29 @@ userSchema.post("save", hookError);
 const User = model("user", userSchema);
 
 export const authRegisterSchema = Joi.object({
-  name: Joi.string().min(4).required().messages({ "any.required": `"name" mast be exist` }),
-  email: Joi.string().pattern(emailPattern).required().messages({ "any.required": `"email" mast be exist` }),
-  password: Joi.string().min(8).required().messages({ "any.required": `"password" mast be exist` }),
+  name: Joi.string()
+    .min(4)
+    .required()
+    .messages({ "any.required": `"name" mast be exist` }),
+  email: Joi.string()
+    .pattern(emailPattern)
+    .required()
+    .messages({ "any.required": `"email" mast be exist` }),
+  password: Joi.string()
+    .min(8)
+    .required()
+    .messages({ "any.required": `"password" mast be exist` }),
 });
 
 export const authLoginSchema = Joi.object({
-  email: Joi.string().pattern(emailPattern).required().messages({ "any.required": `"email" mast be exist` }),
-  password: Joi.string().min(8).required().messages({ "any.required": `"password" mast be exist` }),
+  email: Joi.string()
+    .pattern(emailPattern)
+    .required()
+    .messages({ "any.required": `"email" mast be exist` }),
+  password: Joi.string()
+    .min(8)
+    .required()
+    .messages({ "any.required": `"password" mast be exist` }),
 });
 
 export const authUpdateSchema = Joi.object({
@@ -100,7 +115,10 @@ export const authUpdateSchema = Joi.object({
 });
 
 export const userVerifySchema = Joi.object({
-  email: Joi.string().pattern(emailPattern).required().messages({ message: "missing required field email" }),
+  email: Joi.string()
+    .pattern(emailPattern)
+    .required()
+    .messages({ message: "missing required field email" }),
 });
 
 export default User;
