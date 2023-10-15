@@ -1,6 +1,6 @@
 import { Schema, model } from "mongoose";
 import Joi from "joi";
-import { hookError, runValidateAtUpdate } from "./hooks.js";
+import { hookError } from "./hooks.js";
 
 // const timePattern = /^[0-2][0-3]:[0-5][0-9]$/;
 const timePattern = /^(0[0-9]|1[0-9]|2[0-3]):[0-5][0-9]$/;
