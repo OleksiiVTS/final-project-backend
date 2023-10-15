@@ -1,11 +1,11 @@
 {
   "openapi": "3.0.1",
   "info": {
-    "version": "1.0.0",
+    "version": "1.0.5",
     "title": "GooseTrack",
     "description": "This is a sample documentation for the GooseTrack application based on OpenApi 3.0.1. This documentation provides access to the core functionalities of our service. The API enables you to retrieve and send data, manage resources, and interact with the application. We continuously work on improving it, updating, and expanding its functionality. Please review our documentation to learn how to get started with our API and seamlessly integrate it into your projects."
   },
-  "servers": [{ "url": "http://localhost:4000/api" }],
+  "servers": [{ "url": "https://final-project-backend-6uyr.onrender.com/api" }, { "url": "http://localhost:4000/api" }],
   "tags": [
     { "name": "Auth", "description": "Authorization endpoints" },
     { "name": "Users", "description": "Users endpoints" },
@@ -47,6 +47,10 @@
           "409": {
             "description": "Provided email already exists",
             "content": {}
+          },
+          "500": {
+            "description": "Server error",
+            "content": {}
           }
         }
       }
@@ -85,6 +89,10 @@
           "409": {
             "description": "Email or password invalid",
             "content": {}
+          },
+          "500": {
+            "description": "Server error",
+            "content": {}
           }
         }
       }
@@ -106,6 +114,10 @@
           },
           "401": {
             "description": "Unathorized",
+            "content": {}
+          },
+          "500": {
+            "description": "Server error",
             "content": {}
           }
         }
@@ -130,6 +142,10 @@
           },
           "401": {
             "description": "Unauthorized",
+            "content": {}
+          },
+          "500": {
+            "description": "Server error",
             "content": {}
           }
         }
@@ -162,6 +178,10 @@
           "404": {
             "description": "Email not found",
             "content": {}
+          },
+          "500": {
+            "description": "Server error",
+            "content": {}
           }
         }
       }
@@ -190,14 +210,18 @@
           "400": {
             "description": "Bad request (invalid request body)",
             "content": {}
+          },
+          "500": {
+            "description": "Server error",
+            "content": {}
           }
         }
       }
     },
-    "/users/avatars": {
+    "/users/edit": {
       "patch": {
         "tags": ["Auth"],
-        "summary": "Update user's avatar",
+        "summary": "Update user's data",
         "parameters": [],
         "security": [{ "Bearer": [] }],
         "requestBody": {
@@ -206,24 +230,28 @@
           "content": {
             "multipart/form-data": {
               "schema": {
-                "$ref": "#components/schemas/UpdateAvatarRequest"
+                "$ref": "#components/schemas/UpdateRequest"
               }
             }
           }
         },
         "responses": {
           "200": {
-            "description": "Update avatar success",
+            "description": "Update user data success",
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#components/schemas/UpdateAvatarResponse"
+                  "$ref": "#components/schemas/UpdateResponse"
                 }
               }
             }
           },
           "400": {
             "description": "Bad request (invalid request body)",
+            "content": {}
+          },
+          "500": {
+            "description": "Server error",
             "content": {}
           }
         }
@@ -234,9 +262,9 @@
     "schemas": {
       "RegistrationRequest": {
         "type": "object",
-        "required": ["name", "email", "password"],
+        "required": ["username", "email", "password"],
         "properties": {
-          "name": {
+          "username": {
             "type": "string",
             "description": "User's name",
             "example": "Nadiia Moe"
@@ -258,7 +286,7 @@
       "RegistrationResponse": {
         "type": "object",
         "properties": {
-          "name": {
+          "username": {
             "type": "string",
             "description": "User's name"
           },
@@ -319,29 +347,77 @@
           }
         }
       },
-      "UpdateAvatarRequest": {
+      "UpdateRequest": {
         "type": "object",
         "properties": {
-          "path": {
+          "avatar": {
             "type": "string",
             "format": "binary",
             "required": true
+          },
+          "username": {
+            "type": "string",
+            "description": "User's name"
+          },
+          "email": {
+            "type": "string",
+            "description": "User's email",
+            "format": "email",
+            "pattern": "^[\\w-\\.]+@([\\w-]+\\.)+[\\w-]{2,4}$"
+          },
+          "phone": {
+            "type": "string",
+            "description": "User's phone",
+            "pattern": "/^+380d{9}$/"
+          },
+          "skype": {
+            "type": "string",
+            "description": "User's skype number",
+            "maxLength": 16
+          },
+          "birthday": {
+            "type": "string",
+            "description": "User's birthday"
           }
         }
       },
-      "UpdateAvatarResponse": {
+      "UpdateResponse": {
         "type": "object",
         "properties": {
-          "newAvatarURL": {
+          "avatarURL": {
             "type": "string",
             "example": "http://avatar_link.com"
+          },
+          "username": {
+            "type": "string",
+            "description": "User's name"
+          },
+          "email": {
+            "type": "string",
+            "description": "User's email",
+            "format": "email",
+            "pattern": "^[\\w-\\.]+@([\\w-]+\\.)+[\\w-]{2,4}$"
+          },
+          "phone": {
+            "type": "string",
+            "description": "User's phone",
+            "pattern": "/^+380d{9}$/"
+          },
+          "skype": {
+            "type": "string",
+            "description": "User's skype number",
+            "maxLength": 16
+          },
+          "birthday": {
+            "type": "string",
+            "description": "User's birthday"
           }
         }
       },
       "CurrentResponse": {
         "type": "object",
         "properties": {
-          "name": {
+          "username": {
             "type": "string",
             "description": "User's name"
           },
