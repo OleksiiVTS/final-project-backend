@@ -17,19 +17,6 @@ const userRegister = async (req, res) => {
     throw HttpError(409, "Email in use");
   }
 
-  // const { path: oldPath, filename } = req.file;
-  // await Jimp.read(oldPath)
-  //   .then((image) => {
-  //     image.resize(256, 256);
-  //   })
-  //   .catch((err) => {
-  //     err.message;
-  //   });
-  // const { url: avatarURL, public_id } = await cloudinary.uploader.upload(oldPath, {
-  //   folder: "avatarUser",
-  // });
-  // await fs.unlink(oldPath);
-
   const hashPassword = await bcrypt.hash(password, 10);
   const verificationToken = nanoid();
 
@@ -115,28 +102,6 @@ const repeatVerify = async (req, res) => {
   res.status(200).json({
     message: "Verification email sent",
   });
-};
-
-const userChangeAvatar = async (req, res) => {
-  const { _id, public_id: p_id } = req.user;
-  const { path: filePath } = req.file;
-  await Jimp.read(filePath)
-    .then((image) => {
-      image.resize(256, 256);
-    })
-    .catch((err) => {
-      err.message;
-    });
-  const { url: newAvatarURL, public_id } = await cloudinary.uploader.upload(filePath, {
-    folder: "avatarUser",
-  });
-  await fs.unlink(filePath);
-  await cloudinary.uploader.destroy(p_id).then((result) => console.log(result));
-  await User.findByIdAndUpdate(_id, {
-    avatarURL: newAvatarURL,
-    public_id,
-  });
-  res.status(200).json({ newAvatarURL });
 };
 
 const updateUser = async (req, res) => {

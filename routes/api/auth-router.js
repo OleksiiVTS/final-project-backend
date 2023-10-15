@@ -16,8 +16,6 @@ authRouter.post("/login", authLoginValidate, authCtrl.userLogin);
 
 authRouter.patch("/edit", authenticate, authUpdateValidate, upload.single("avatar"), authCtrl.updateUser);
 
-authRouter.patch("/avatars", authenticate, upload.single("avatar"), authCtrl.userChangeAvatar);
-
 authRouter.post("/logout", authenticate, authCtrl.userLogout);
 
 authRouter.get("/current", authenticate, authCtrl.getCurrent);
