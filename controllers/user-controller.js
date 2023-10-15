@@ -11,24 +11,11 @@ import { ctrlWrapper } from "../decorators/index.js";
 const { JWT_SECRET, BASE_URL } = process.env;
 
 const userRegister = async (req, res) => {
-  const { email, password } = req.body;
+  const { name, email, password } = req.body;
   const isUser = await User.findOne({ email });
   if (isUser) {
-    throw HttpError(409, `"Email in use"`);
+    throw HttpError(409, "Email in use");
   }
-
-  // const { path: oldPath, filename } = req.file;
-  // await Jimp.read(oldPath)
-  //   .then((image) => {
-  //     image.resize(256, 256);
-  //   })
-  //   .catch((err) => {
-  //     err.message;
-  //   });
-  // const { url: avatarURL, public_id } = await cloudinary.uploader.upload(oldPath, {
-  //   folder: "avatarUser",
-  // });
-  // await fs.unlink(oldPath);
 
   const hashPassword = await bcrypt.hash(password, 10);
   const verificationToken = nanoid();
@@ -36,8 +23,6 @@ const userRegister = async (req, res) => {
   const user = await User.create({
     ...req.body,
     password: hashPassword,
-    // avatarURL,
-    // public_id,
     verificationToken,
   });
 
@@ -48,6 +33,15 @@ const userRegister = async (req, res) => {
   // };
 
   // await sendEmail(verifyEmail);
+
+  const response = await fetch(`https://ui-avatars.com/api/?name=${name}`);
+  if (response.ok) {
+    const firstLetterName = name[0];
+    const avatarURL = `https://ui-avatars.com/api/?name=${firstLetterName}&size=256`;
+    await User.findByIdAndUpdate(user._id, { avatarURL }, { new: true });
+  } else {
+    throw HttpError(response.status);
+  }
 
   res.status(201).json({
     name: user.name,
@@ -110,26 +104,38 @@ const repeatVerify = async (req, res) => {
   });
 };
 
-const userChangeAvatar = async (req, res) => {
-  const { _id, public_id: p_id } = req.user;
-  const { path: filePath } = req.file;
-  await Jimp.read(filePath)
-    .then((image) => {
-      image.resize(256, 256);
-    })
-    .catch((err) => {
-      err.message;
+const updateUser = async (req, res) => {
+  const { _id: id, public_id: oldPublic_id } = req.user;
+
+  const tempPath = req.file ? req.file.path : null;
+  if (tempPath) {
+    await Jimp.read(tempPath)
+      .then((image) => {
+        image.resize(256, 256);
+      })
+      .catch((err) => {
+        err.message;
+      });
+
+    const { url: avatarURL, public_id } = await cloudinary.uploader.upload(tempPath, {
+      folder: "avatarUser",
     });
-  const { url: newAvatarURL, public_id } = await cloudinary.uploader.upload(filePath, {
-    folder: "avatarUser",
-  });
-  await fs.unlink(filePath);
-  await cloudinary.uploader.destroy(p_id).then((result) => console.log(result));
-  await User.findByIdAndUpdate(_id, {
-    avatarURL: newAvatarURL,
-    public_id,
-  });
-  res.status(200).json({ newAvatarURL });
+    await fs.unlink(tempPath);
+    await cloudinary.uploader.destroy(oldPublic_id).then((result) => result);
+
+    const updatedUserAndAvatar = await User.findByIdAndUpdate(id, { ...req.body, avatarURL, public_id }, { new: true });
+    if (!updatedUserAndAvatar) throw HttpError(400);
+
+    res.json(updatedUserAndAvatar);
+  } else {
+    const user = await User.findById(id);
+    if (!user) throw HttpError(404, "User not found");
+
+    const updatedUser = await User.findByIdAndUpdate(id, { ...req.body }, { new: true });
+    if (!updatedUser) throw HttpError(400);
+
+    res.json(updatedUser);
+  }
 };
 
 const getCurrent = async (req, res) => {
@@ -145,26 +151,12 @@ const userLogout = async (req, res) => {
   });
 };
 
-const changeSubscript = async (req, res) => {
-  const { _id, subscription } = req.user;
-  const { type } = req.params;
-  if (type === "starter" || "pro" || "business") {
-    const user = await User.findByIdAndUpdate(_id, { subscription: type });
-    res.status(200).json({
-      email: user.email,
-      subscription,
-    });
-    return;
-  }
-  throw HttpError(409, "Subscription is not validate");
-};
-
 export default {
   userRegister: ctrlWrapper(userRegister),
   userLogin: ctrlWrapper(userLogin),
   getCurrent: ctrlWrapper(getCurrent),
   userLogout: ctrlWrapper(userLogout),
-  changeSubscript: ctrlWrapper(changeSubscript),
+  updateUser: ctrlWrapper(updateUser),
   userChangeAvatar: ctrlWrapper(userChangeAvatar),
   getVerification: ctrlWrapper(getVerification),
   repeatVerify: ctrlWrapper(repeatVerify),
