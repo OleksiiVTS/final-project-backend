@@ -113,7 +113,7 @@
             "content": {}
           },
           "401": {
-            "description": "Unathorized",
+            "description": "Unauthorized",
             "content": {}
           },
           "500": {
@@ -168,7 +168,7 @@
         ],
         "responses": {
           "200": {
-            "description": "Verification successfull",
+            "description": "Verification successful",
             "content": {}
           },
           "400": {
@@ -192,7 +192,7 @@
         "summary": "Resend verification user's email",
         "parameters": [],
         "requestBody": {
-          "description": "Vefify's object",
+          "description": "Verify's object",
           "required": true,
           "content": {
             "application/json": {
