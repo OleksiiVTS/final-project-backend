@@ -1,6 +1,6 @@
+import { Task } from "../models/usertask.js";
 import ctrlWrapper from "../decorators/ctrlWrapper.js";
 import { HttpError } from "../helpers/index.js";
-import { Task } from "../models/Task.js";
 
 const getAllTasks = async (req, res) => {
   const { _id: owner } = req.user;

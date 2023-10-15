@@ -1,6 +1,11 @@
-import { authLoginSchema, authRegisterSchema, authUpdateSchema, userVerifySchema } from "../../models/user.js";
+import {
+  authLoginSchema,
+  authRegisterSchema,
+  authUpdateSchema,
+  userVerifySchema,
+} from "../../models/user.js";
 import { reviewAddSchema } from "../../models/review.js";
-import { taskAddSchema, taskUpdateSchema } from "../../models/Task.js";
+import { taskAddSchema, taskUpdateSchema } from "../../models/usertask.js";
 import { validateBody } from "../../decorators/index.js";
 
 export const authRegisterValidate = validateBody(authRegisterSchema);
