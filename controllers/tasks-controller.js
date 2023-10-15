@@ -4,9 +4,12 @@ import { HttpError } from "../helpers/index.js";
 
 const getAllTasks = async (req, res) => {
   const { _id: owner } = req.user;
-  const result = await Task.find({ owner }, "-createdAt -updatedAt");
+  const { date } = req.body;
+  const result = await Task.find(
+    { owner, date: { $regex: date, $options: "i" } },
+    "-createdAt -updatedAt"
+  );
   res.json(result);
-  //
 };
 
 const addTask = async (req, res) => {
