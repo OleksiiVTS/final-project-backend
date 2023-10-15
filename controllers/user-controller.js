@@ -117,13 +117,20 @@ const updateUser = async (req, res) => {
         err.message;
       });
 
-    const { url: avatarURL, public_id } = await cloudinary.uploader.upload(tempPath, {
-      folder: "avatarUser",
-    });
+    const { url: avatarURL, public_id } = await cloudinary.uploader.upload(
+      tempPath,
+      {
+        folder: "avatarUser",
+      }
+    );
     await fs.unlink(tempPath);
     await cloudinary.uploader.destroy(oldPublic_id).then((result) => result);
 
-    const updatedUserAndAvatar = await User.findByIdAndUpdate(id, { ...req.body, avatarURL, public_id }, { new: true });
+    const updatedUserAndAvatar = await User.findByIdAndUpdate(
+      id,
+      { ...req.body, avatarURL, public_id },
+      { new: true }
+    );
     if (!updatedUserAndAvatar) throw HttpError(400);
 
     res.json(updatedUserAndAvatar);
@@ -131,7 +138,11 @@ const updateUser = async (req, res) => {
     const user = await User.findById(id);
     if (!user) throw HttpError(404, "User not found");
 
-    const updatedUser = await User.findByIdAndUpdate(id, { ...req.body }, { new: true });
+    const updatedUser = await User.findByIdAndUpdate(
+      id,
+      { ...req.body },
+      { new: true }
+    );
     if (!updatedUser) throw HttpError(400);
 
     res.json(updatedUser);
@@ -157,7 +168,6 @@ export default {
   getCurrent: ctrlWrapper(getCurrent),
   userLogout: ctrlWrapper(userLogout),
   updateUser: ctrlWrapper(updateUser),
-  userChangeAvatar: ctrlWrapper(userChangeAvatar),
   getVerification: ctrlWrapper(getVerification),
   repeatVerify: ctrlWrapper(repeatVerify),
 };
