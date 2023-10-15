@@ -8,7 +8,7 @@ const phonePattern = /^\+380\d{9}$/;
 const datePattern = /^\d{4}-(0[1-9]|1[0-2])-(0[1-9]|[12][0-9]|3[01])$/;
 const withoutSpacesPattern = /^\S(.*\S)?$/;
 
-const userBirhday = getCurrentDate();
+const userBirthday = getCurrentDate();
 
 const userSchema = new Schema(
   {
@@ -42,7 +42,7 @@ const userSchema = new Schema(
     birthday: {
       type: String,
       pattern: datePattern,
-      default: userBirhday,
+      default: userBirthday,
     },
     avatarURL: {
       type: String,
@@ -109,7 +109,7 @@ export const authUpdateSchema = Joi.object({
   email: Joi.string().pattern(emailPattern),
   phone: Joi.string().pattern(phonePattern),
   skype: Joi.string().pattern(phonePattern),
-  theme: Joi.string().valid("dark", "ligth"),
+  theme: Joi.string().valid("dark", "light"),
   avatarURL: Joi.string(),
   path: Joi.binary(),
 });
