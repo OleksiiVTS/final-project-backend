@@ -5,7 +5,7 @@
     "title": "GooseTrack",
     "description": "This is a sample documentation for the GooseTrack application based on OpenApi 3.0.1. This documentation provides access to the core functionalities of our service. The API enables you to retrieve and send data, manage resources, and interact with the application. We continuously work on improving it, updating, and expanding its functionality. Please review our documentation to learn how to get started with our API and seamlessly integrate it into your projects."
   },
-  "servers": [{ "url": "http://localhost:4000/api" }],
+  "servers": [{ "url": "https://final-project-backend-6uyr.onrender.com/api" }, { "url": "http://localhost:4000/api" }],
   "tags": [
     { "name": "Auth", "description": "Authorization endpoints" },
     { "name": "Users", "description": "Users endpoints" },
