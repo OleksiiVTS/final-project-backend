@@ -75,9 +75,9 @@ const userLogin = async (req, res) => {
   if (!user) {
     throw HttpError(401, `"Email or password is wrong"`);
   }
-  if (!user.verify) {
-    throw HttpError(401, `"User is not verify"`);
-  }
+  // if (!user.verify) {
+  //   throw HttpError(401, `"User is not verify"`);
+  // }
   const passwordCompare = await bcrypt.compare(password, user.password);
   if (!passwordCompare) {
     throw HttpError(401, `"Email or password is wrong"`);
@@ -120,9 +120,12 @@ const userChangeAvatar = async (req, res) => {
     .catch((err) => {
       err.message;
     });
-  const { url: newAvatarURL, public_id } = await cloudinary.uploader.upload(filePath, {
-    folder: "avatarUser",
-  });
+  const { url: newAvatarURL, public_id } = await cloudinary.uploader.upload(
+    filePath,
+    {
+      folder: "avatarUser",
+    }
+  );
   await fs.unlink(filePath);
   await cloudinary.uploader.destroy(p_id).then((result) => console.log(result));
   await User.findByIdAndUpdate(_id, {
