@@ -1,9 +1,8 @@
 import express from "express";
+import reviewCtrl from "../../controllers/review-controller.js";
 
 import authenticate from "../../middleware/validation/authenticate.js";
 import { validateReview } from "../../middleware/validation/validation.js";
-
-import reviewCtrl from "../../controllers/review-controller.js";
 
 const reviewRouter = express.Router();
 
