@@ -12,9 +12,9 @@ const userBirhday = getCurrentDate();
 
 const userSchema = new Schema(
   {
-    name: {
+    username: {
       type: String,
-      required: [true, "Name is required"],
+      required: [true, "Username is required"],
       minLength: 4,
     },
     email: {
@@ -78,10 +78,10 @@ userSchema.post("save", hookError);
 const User = model("user", userSchema);
 
 export const authRegisterSchema = Joi.object({
-  name: Joi.string()
+  username: Joi.string()
     .min(4)
     .required()
-    .messages({ "any.required": `"name" mast be exist` }),
+    .messages({ "any.required": `"username" mast be exist` }),
   email: Joi.string()
     .pattern(emailPattern)
     .required()
@@ -104,7 +104,7 @@ export const authLoginSchema = Joi.object({
 });
 
 export const authUpdateSchema = Joi.object({
-  name: Joi.string().min(4).pattern(withoutSpacesPattern),
+  username: Joi.string().min(4).pattern(withoutSpacesPattern),
   birthday: Joi.string().pattern(datePattern),
   email: Joi.string().pattern(emailPattern),
   phone: Joi.string().pattern(phonePattern),

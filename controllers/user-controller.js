@@ -11,7 +11,7 @@ import { ctrlWrapper } from "../decorators/index.js";
 const { JWT_SECRET, BASE_URL } = process.env;
 
 const userRegister = async (req, res) => {
-  const { name, email, password } = req.body;
+  const { username, email, password } = req.body;
   const isUser = await User.findOne({ email });
   if (isUser) {
     throw HttpError(409, "Email in use");
@@ -34,9 +34,9 @@ const userRegister = async (req, res) => {
 
   // await sendEmail(verifyEmail);
 
-  const response = await fetch(`https://ui-avatars.com/api/?name=${name}`);
+  const response = await fetch(`https://ui-avatars.com/api/?name=${username}`);
   if (response.ok) {
-    const firstLetterName = name[0];
+    const firstLetterName = username[0];
     const avatarURL = `https://ui-avatars.com/api/?name=${firstLetterName}&size=256`;
     await User.findByIdAndUpdate(user._id, { avatarURL }, { new: true });
   } else {
@@ -44,7 +44,7 @@ const userRegister = async (req, res) => {
   }
 
   res.status(201).json({
-    name: user.name,
+    username: user.username,
     email: user.email,
   });
 };
