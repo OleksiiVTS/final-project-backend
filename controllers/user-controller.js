@@ -47,12 +47,10 @@ const userRegister = async (req, res) => {
 
   // await sendEmail(verifyEmail);
 
-  let avatarURL;
-
   const response = await fetch(`https://ui-avatars.com/api/?name=${name}`);
   if (response.ok) {
     const firstLetterName = name[0];
-    avatarURL = `https://ui-avatars.com/api/?name=${firstLetterName}&size=256`;
+    const avatarURL = `https://ui-avatars.com/api/?name=${firstLetterName}&size=256`;
     await User.findByIdAndUpdate(user._id, { avatarURL }, { new: true });
   } else {
     throw HttpError(response.status);
@@ -142,15 +140,37 @@ const userChangeAvatar = async (req, res) => {
 };
 
 const updateUser = async (req, res) => {
-  const { _id: id } = req.user;
+  const { _id: id, public_id: oldPublic_id } = req.user;
 
-  const user = await User.findById(id);
-  if (!user) throw HttpError(404, "User not found");
+  const tempPath = req.file ? req.file.path : null;
+  if (tempPath) {
+    await Jimp.read(tempPath)
+      .then((image) => {
+        image.resize(256, 256);
+      })
+      .catch((err) => {
+        err.message;
+      });
 
-  const updatedUser = await User.findByIdAndUpdate(id, req.body, { new: true });
-  if (!updatedUser) throw HttpError(400);
+    const { url: avatarURL, public_id } = await cloudinary.uploader.upload(tempPath, {
+      folder: "avatarUser",
+    });
+    await fs.unlink(tempPath);
+    await cloudinary.uploader.destroy(oldPublic_id).then((result) => result);
 
-  res.json(updatedUser);
+    const updatedUserAndAvatar = await User.findByIdAndUpdate(id, { ...req.body, avatarURL, public_id }, { new: true });
+    if (!updatedUserAndAvatar) throw HttpError(400);
+
+    res.json(updatedUserAndAvatar);
+  } else {
+    const user = await User.findById(id);
+    if (!user) throw HttpError(404, "User not found");
+
+    const updatedUser = await User.findByIdAndUpdate(id, { ...req.body }, { new: true });
+    if (!updatedUser) throw HttpError(400);
+
+    res.json(updatedUser);
+  }
 };
 
 const getCurrent = async (req, res) => {

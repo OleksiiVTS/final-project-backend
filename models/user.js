@@ -96,6 +96,7 @@ export const authUpdateSchema = Joi.object({
   skype: Joi.string().pattern(phonePattern),
   theme: Joi.string().valid("dark", "ligth"),
   avatarURL: Joi.string(),
+  path: Joi.binary(),
 });
 
 export const userVerifySchema = Joi.object({
