@@ -11,11 +11,12 @@ import { ctrlWrapper } from "../decorators/index.js";
 const { JWT_SECRET, BASE_URL } = process.env;
 
 const userRegister = async (req, res) => {
-  const { email, password } = req.body;
+  const { name, email, password } = req.body;
   const isUser = await User.findOne({ email });
   if (isUser) {
     throw HttpError(409, "Email in use");
   }
+  let avatarURL;
 
   // const { path: oldPath, filename } = req.file;
   // await Jimp.read(oldPath)
@@ -36,8 +37,6 @@ const userRegister = async (req, res) => {
   const user = await User.create({
     ...req.body,
     password: hashPassword,
-    // avatarURL,
-    // public_id,
     verificationToken,
   });
 
@@ -48,6 +47,15 @@ const userRegister = async (req, res) => {
   // };
 
   // await sendEmail(verifyEmail);
+
+  const response = await fetch(`https://ui-avatars.com/api/?name=${name}`);
+  if (response.ok) {
+    const firstLetterName = name[0];
+    avatarURL = `https://ui-avatars.com/api/?name=${firstLetterName}&size=256`;
+    await User.findByIdAndUpdate(user._id, { ...req.body, avatarURL }, { new: true });
+  } else {
+    HttpError(response.status);
+  }
 
   res.status(201).json({
     name: user.name,
