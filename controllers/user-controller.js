@@ -16,7 +16,6 @@ const userRegister = async (req, res) => {
   if (isUser) {
     throw HttpError(409, "Email in use");
   }
-  let avatarURL;
 
   // const { path: oldPath, filename } = req.file;
   // await Jimp.read(oldPath)
@@ -48,13 +47,15 @@ const userRegister = async (req, res) => {
 
   // await sendEmail(verifyEmail);
 
+  let avatarURL;
+
   const response = await fetch(`https://ui-avatars.com/api/?name=${name}`);
   if (response.ok) {
     const firstLetterName = name[0];
     avatarURL = `https://ui-avatars.com/api/?name=${firstLetterName}&size=256`;
-    await User.findByIdAndUpdate(user._id, { ...req.body, avatarURL }, { new: true });
+    await User.findByIdAndUpdate(user._id, { avatarURL }, { new: true });
   } else {
-    HttpError(response.status);
+    throw HttpError(response.status);
   }
 
   res.status(201).json({
