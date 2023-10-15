@@ -47,6 +47,10 @@
           "409": {
             "description": "Provided email already exists",
             "content": {}
+          },
+          "500": {
+            "description": "Server error",
+            "content": {}
           }
         }
       }
@@ -85,6 +89,10 @@
           "409": {
             "description": "Email or password invalid",
             "content": {}
+          },
+          "500": {
+            "description": "Server error",
+            "content": {}
           }
         }
       }
@@ -106,6 +114,10 @@
           },
           "401": {
             "description": "Unathorized",
+            "content": {}
+          },
+          "500": {
+            "description": "Server error",
             "content": {}
           }
         }
@@ -130,6 +142,10 @@
           },
           "401": {
             "description": "Unauthorized",
+            "content": {}
+          },
+          "500": {
+            "description": "Server error",
             "content": {}
           }
         }
@@ -162,6 +178,10 @@
           "404": {
             "description": "Email not found",
             "content": {}
+          },
+          "500": {
+            "description": "Server error",
+            "content": {}
           }
         }
       }
@@ -189,6 +209,10 @@
           },
           "400": {
             "description": "Bad request (invalid request body)",
+            "content": {}
+          },
+          "500": {
+            "description": "Server error",
             "content": {}
           }
         }
@@ -224,6 +248,10 @@
           },
           "400": {
             "description": "Bad request (invalid request body)",
+            "content": {}
+          },
+          "500": {
+            "description": "Server error",
             "content": {}
           }
         }
