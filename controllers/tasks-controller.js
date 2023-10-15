@@ -10,7 +10,6 @@ const getAllTasks = async (req, res) => {
     "-createdAt -updatedAt"
   );
   res.json(result);
-  //
 };
 
 const addTask = async (req, res) => {
