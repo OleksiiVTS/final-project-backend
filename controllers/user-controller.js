@@ -14,7 +14,7 @@ const userRegister = async (req, res) => {
   const { email, password } = req.body;
   const isUser = await User.findOne({ email });
   if (isUser) {
-    throw HttpError(409, `"Email in use"`);
+    throw HttpError(409, "Email in use");
   }
 
   // const { path: oldPath, filename } = req.file;
@@ -132,6 +132,18 @@ const userChangeAvatar = async (req, res) => {
   res.status(200).json({ newAvatarURL });
 };
 
+const updateUser = async (req, res) => {
+  const { _id: id } = req.user;
+
+  const user = await User.findById(id);
+  if (!user) throw HttpError(404, "User not found");
+
+  const updatedUser = await User.findByIdAndUpdate(id, req.body, { new: true });
+  if (!updatedUser) throw HttpError(400);
+
+  res.json(updatedUser);
+};
+
 const getCurrent = async (req, res) => {
   const { name, email, phone, skype, birthday, theme } = req.user;
   res.status(200).json({ name, email, phone, skype, birthday, theme });
@@ -145,26 +157,12 @@ const userLogout = async (req, res) => {
   });
 };
 
-const changeSubscript = async (req, res) => {
-  const { _id, subscription } = req.user;
-  const { type } = req.params;
-  if (type === "starter" || "pro" || "business") {
-    const user = await User.findByIdAndUpdate(_id, { subscription: type });
-    res.status(200).json({
-      email: user.email,
-      subscription,
-    });
-    return;
-  }
-  throw HttpError(409, "Subscription is not validate");
-};
-
 export default {
   userRegister: ctrlWrapper(userRegister),
   userLogin: ctrlWrapper(userLogin),
   getCurrent: ctrlWrapper(getCurrent),
   userLogout: ctrlWrapper(userLogout),
-  changeSubscript: ctrlWrapper(changeSubscript),
+  updateUser: ctrlWrapper(updateUser),
   userChangeAvatar: ctrlWrapper(userChangeAvatar),
   getVerification: ctrlWrapper(getVerification),
   repeatVerify: ctrlWrapper(repeatVerify),
