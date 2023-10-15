@@ -150,8 +150,8 @@ const updateUser = async (req, res) => {
 };
 
 const getCurrent = async (req, res) => {
-  const { name, email, phone, skype, birthday, theme } = req.user;
-  res.status(200).json({ name, email, phone, skype, birthday, theme });
+  const { username, email, phone, skype, birthday, theme } = req.user;
+  res.status(200).json({ username, email, phone, skype, birthday, theme });
 };
 
 const userLogout = async (req, res) => {

@@ -262,9 +262,9 @@
     "schemas": {
       "RegistrationRequest": {
         "type": "object",
-        "required": ["name", "email", "password"],
+        "required": ["username", "email", "password"],
         "properties": {
-          "name": {
+          "username": {
             "type": "string",
             "description": "User's name",
             "example": "Nadiia Moe"
@@ -286,7 +286,7 @@
       "RegistrationResponse": {
         "type": "object",
         "properties": {
-          "name": {
+          "username": {
             "type": "string",
             "description": "User's name"
           },
@@ -355,7 +355,7 @@
             "format": "binary",
             "required": true
           },
-          "name": {
+          "username": {
             "type": "string",
             "description": "User's name"
           },
@@ -388,7 +388,7 @@
             "type": "string",
             "example": "http://avatar_link.com"
           },
-          "name": {
+          "username": {
             "type": "string",
             "description": "User's name"
           },
@@ -417,7 +417,7 @@
       "CurrentResponse": {
         "type": "object",
         "properties": {
-          "name": {
+          "username": {
             "type": "string",
             "description": "User's name"
           },
