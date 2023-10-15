@@ -69,9 +69,9 @@ const userLogin = async (req, res) => {
   if (!user) {
     throw HttpError(401, `"Email or password is wrong"`);
   }
-  if (!user.verify) {
-    throw HttpError(401, `"User is not verify"`);
-  }
+  // if (!user.verify) {
+  //   throw HttpError(401, `"User is not verify"`);
+  // }
   const passwordCompare = await bcrypt.compare(password, user.password);
   if (!passwordCompare) {
     throw HttpError(401, `"Email or password is wrong"`);
@@ -150,8 +150,8 @@ const updateUser = async (req, res) => {
 };
 
 const getCurrent = async (req, res) => {
-  const { name, email, phone, skype, birthday, theme } = req.user;
-  res.status(200).json({ name, email, phone, skype, birthday, theme });
+  const { username, email, phone, skype, birthday, theme } = req.user;
+  res.status(200).json({ username, email, phone, skype, birthday, theme });
 };
 
 const userLogout = async (req, res) => {
