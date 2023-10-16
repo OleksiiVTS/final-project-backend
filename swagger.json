@@ -405,6 +405,178 @@
           }
         }
       }
+    },
+    "/reviews": {
+      "get": {
+        "tags": ["Reviews"],
+        "summary": "Get all reviews",
+        "parameters": [
+          {
+            "name": "page",
+            "in": "query",
+            "example": 1,
+            "schema": { "type": "string" }
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "example": 20,
+            "schema": { "type": "string" }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Operation success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#components/schemas/AllReviewsResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad request (invalid request body)",
+            "content": {}
+          },
+          "500": {
+            "description": "Server error",
+            "content": {}
+          }
+        }
+      }
+    },
+    "/reviews/own": {
+      "get": {
+        "tags": ["Reviews"],
+        "summary": "Get own review",
+        "security": [{ "Bearer": [] }],
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "Get own review",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#components/schemas/ReviewResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad request (invalid request body)",
+            "content": {}
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {}
+          },
+          "500": {
+            "description": "Server error",
+            "content": {}
+          }
+        }
+      },
+      "post": {
+        "tags": ["Reviews"],
+        "summary": "Add own review",
+        "security": [{ "Bearer": [] }],
+        "parameters": [],
+        "requestBody": {
+          "description": "Review's object for adding",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#components/schemas/AddReviewRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Operation success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#components/schemas/ReviewResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad request (invalid request body)",
+            "content": {}
+          },
+          "409": {
+            "description": "The user has already left a review",
+            "content": {}
+          },
+          "500": {
+            "description": "Server error",
+            "content": {}
+          }
+        }
+      },
+      "patch": {
+        "tags": ["Reviews"],
+        "summary": "Edit own task",
+        "security": [{ "Bearer": [] }],
+        "parameters": [],
+        "requestBody": {
+          "description": "Review's object for editing",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#components/schemas/UpdateReviewRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Operation success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#components/schemas/ReviewResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad request (invalid request body)",
+            "content": {}
+          },
+          "404": {
+            "description": "Review not found",
+            "content": {}
+          },
+          "500": {
+            "description": "Server error",
+            "content": {}
+          }
+        }
+      },
+      "delete": {
+        "tags": ["Reviews"],
+        "summary": "Delete own task",
+        "security": [{ "Bearer": [] }],
+        "parameters": [],
+        "responses": {
+          "204": {
+            "description": "Deleted successfully",
+            "content": {}
+          },
+          "404": {
+            "description": "Review not found",
+            "content": {}
+          },
+          "500": {
+            "description": "Server error",
+            "content": {}
+          }
+        }
+      }
     }
   },
   "components": {
@@ -846,6 +1018,122 @@
           "updatedAt": {
             "type": "string",
             "description": "Date of last updating task"
+          }
+        }
+      },
+      "AllReviewsResponse": {
+        "type": "array",
+        "items": {
+          "type": "object",
+          "properties": {
+            "_id": {
+              "type": "string",
+              "description": "Review's id",
+              "example": "review_id-1"
+            },
+            "comment": {
+              "type": "string",
+              "description": "Review's comment",
+              "example": "Amazing web app!"
+            },
+            "rating": {
+              "type": "number",
+              "description": "Review's rating",
+              "example": 5
+            },
+            "owner": {
+              "type": "object",
+              "description": "Owner's data",
+              "properties": {
+                "_id": {
+                  "type": "string",
+                  "description": "Owner's id",
+                  "example": "owner_id-1"
+                },
+                "avatarURL": {
+                  "type": "string",
+                  "description": "Avatar link",
+                  "example": "http://avatar_link.com"
+                }
+              }
+            }
+          }
+        }
+      },
+      "ReviewResponse": {
+        "type": "object",
+        "properties": {
+          "_id": {
+            "type": "string",
+            "description": "Review's id",
+            "example": "review_id-1"
+          },
+          "comment": {
+            "type": "string",
+            "description": "Review's comment",
+            "example": "Amazing web app!"
+          },
+          "rating": {
+            "type": "number",
+            "description": "Review's rating",
+            "example": 5
+          },
+          "owner": {
+            "type": "object",
+            "description": "Owner's data",
+            "properties": {
+              "username": {
+                "type": "string",
+                "description": "User's name",
+                "example": "Nadiia Moe"
+              },
+              "_id": {
+                "type": "string",
+                "description": "Owner's id",
+                "example": "owner_id-1"
+              },
+              "avatarURL": {
+                "type": "string",
+                "description": "Avatar link",
+                "example": "http://avatar_link.com"
+              }
+            }
+          }
+        }
+      },
+      "AddReviewRequest": {
+        "type": "object",
+        "required": ["comment", "rating"],
+        "properties": {
+          "comment": {
+            "type": "string",
+            "description": "Your review comment",
+            "example": "Cool!"
+          },
+          "rating": {
+            "type": "number",
+            "description": "Your review rating",
+            "example": 5,
+            "min": 1,
+            "max": 5
+          }
+        }
+      },
+      "UpdateReviewRequest": {
+        "type": "object",
+        "description": "Review's object for editing",
+        "properties": {
+          "comment": {
+            "type": "string",
+            "description": "Your review comment",
+            "example": "Cool!"
+          },
+          "rating": {
+            "type": "number",
+            "description": "Your review rating",
+            "example": 5,
+            "min": 1,
+            "max": 5
           }
         }
       }
