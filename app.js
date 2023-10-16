@@ -1,11 +1,14 @@
 import express from "express";
 import logger from "morgan";
 import cors from "cors";
+import swaggerUi from "swagger-ui-express";
+
+import { readFile } from "fs/promises";
+const swaggerDocument = JSON.parse(await readFile(new URL("./swagger.json", import.meta.url)));
 
 import authRouter from "./routes/api/auth-router.js";
 import reviewRouter from "./routes/api/review-router.js";
 import tasksRouter from "./routes/api/tasks-router.js";
-
 
 const app = express();
 
@@ -22,6 +25,7 @@ app.use("/api/reviews", reviewRouter);
 
 app.use("/api/tasks", tasksRouter);
 
+app.use("/api/docs", swaggerUi.serve, swaggerUi.setup(swaggerDocument));
 
 app.use((req, res) => {
   res.status(404).json({ message: "Not found" });

@@ -1,42 +1,23 @@
 import express from "express";
-import {
-  ausValidate,
-  ausVerify,
-} from "../../middleware/validation/validation.js";
+import { authVerify, authLoginValidate, authRegisterValidate, authUpdateValidate } from "../../middleware/validation/validation.js";
 import authenticate from "../../middleware/validation/authenticate.js";
-import ausController from "../../controllers/user-controller.js";
+import authCtrl from "../../controllers/user-controller.js";
 import { upload } from "../../middleware/validation/upload.js";
 
 const authRouter = express.Router();
 
-authRouter.post(
-  "/register",
-  upload.single("avatar"),
-  ausValidate,
-  ausController.userReg
-);
+authRouter.post("/register", authRegisterValidate, authCtrl.userRegister);
 
-authRouter.get("/verify/:verificationToken", ausController.getVerification);
+authRouter.get("/verify/:verificationToken", authCtrl.getVerification);
 
-authRouter.post("/verify", ausVerify, ausController.repeatVerify);
+authRouter.post("/verify", authVerify, authCtrl.repeatVerify);
 
-authRouter.post("/login", ausValidate, ausController.userLog);
+authRouter.post("/login", authLoginValidate, authCtrl.userLogin);
 
-authRouter.patch(
-  "/avatars",
-  authenticate,
-  upload.single("avatar"),
-  ausController.userChangeAvatar
-);
+authRouter.patch("/edit", authenticate, authUpdateValidate, upload.single("avatar"), authCtrl.updateUser);
 
-authRouter.post("/logout", authenticate, ausController.logOut);
+authRouter.post("/logout", authenticate, authCtrl.userLogout);
 
-authRouter.get("/current", authenticate, ausController.getCurrent);
-
-authRouter.patch(
-  "/subscription/:type",
-  authenticate,
-  ausController.changeSubscript
-);
+authRouter.get("/current", authenticate, authCtrl.getCurrent);
 
 export default authRouter;

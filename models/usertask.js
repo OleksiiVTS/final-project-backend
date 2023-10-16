@@ -53,31 +53,53 @@ const taskSchema = new Schema(
 
 taskSchema.post("save", hookError);
 
+// taskSchema.pre("findOneAndUpdate", runValidateAtUpdate);
+taskSchema.post("findOneAndUpdate", hookError);
+
 export const Task = model("task", taskSchema);
 
 export const taskAddSchema = Joi.object({
-  title: Joi.string()
-    .required()
-    .max(250)
-    .messages({ "any.required": `"title" must be exist` }),
-  start: Joi.string()
-    .required()
-    .pattern(timePattern)
-    .messages({ "any.required": `"start" must be exist` }),
-  end: Joi.string()
-    .required()
-    .pattern(timePattern)
-    .messages({ "any.required": `"end" must be exist` }),
+  title: Joi.string().required().max(250).messages({
+    "any.required": `"title" must be exist`,
+    "string.empty": `"title" must be not empty`,
+  }),
+  start: Joi.string().required().pattern(timePattern).messages({
+    "any.required": `"start" must be exist`,
+    "string.pattern.base": `time is not valid`,
+  }),
+  end: Joi.string().required().pattern(timePattern).messages({
+    "any.required": `"end" must be exist`,
+    "string.pattern.base": `time is not valid`,
+  }),
   priority: Joi.string()
     .required()
     .valid(...priorityList)
     .messages({ "any.required": `"priority" must be exist` }),
-  date: Joi.string()
-    .required()
-    .pattern(datePattern)
-    .messages({ "any.required": `"date" must be exist` }),
+  date: Joi.string().required().pattern(datePattern).messages({
+    "any.required": `"date" must be exist`,
+    "string.pattern.base": `date is not valid`,
+  }),
   category: Joi.string()
     .required()
     .valid(...categoryList)
     .messages({ "any.required": `"category" must be exist` }),
+});
+
+export const taskUpdateSchema = Joi.object({
+  title: Joi.string()
+    .max(250)
+    // .pattern(/^\S(.*\S)?$/)
+    .messages({ "string.empty": `"title" must be not empty` }),
+  start: Joi.string()
+    .pattern(timePattern)
+    .messages({ "string.pattern.base": `time is not valid` }),
+  end: Joi.string()
+    .pattern(timePattern)
+    .messages({ "string.pattern.base": `time is not valid` }),
+  priority: Joi.string().valid(...priorityList),
+  date: Joi.string().pattern(datePattern).messages({
+    "any.required": `"date" must be exist`,
+    "string.pattern.base": `date is not valid`,
+  }),
+  category: Joi.string().valid(...categoryList),
 });
