@@ -24,7 +24,14 @@ const addReview = async (req, res) => {
     ...req.body,
     owner: req.user,
   });
-  res.status(201).json(result);
+  const { _id, comment, rating, owner } = result;
+  const { avatarURL, username } = owner;
+  res.status(201).json({
+    _id,
+    comment,
+    rating,
+    owner: { avatarURL, username, _id: owner._id },
+  });
 };
 
 const updateReview = async (req, res) => {
@@ -33,7 +40,8 @@ const updateReview = async (req, res) => {
     {
       ...req.body,
       owner: req.user,
-    }
+    },
+    { new: true }
   );
   if (!result) {
     throw HttpError(404, "Review not found");
