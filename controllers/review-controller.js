@@ -32,7 +32,6 @@ const updateReview = async (req, res) => {
     { owner: req.user },
     {
       ...req.body,
-      owner: req.user,
     }
   );
   if (!result) {
