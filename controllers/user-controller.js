@@ -25,14 +25,15 @@ const userRegister = async (req, res) => {
     password: hashPassword,
     verificationToken,
   });
+  //const mail = verifyEmail({ BASE_URL, verificationToken });
 
-  // const verifyEmail = {
-  //   to: email,
-  //   subject: "Nodemailer test",
-  //   html: `<a target="_blank" href="${BASE_URL}/api/users/verify/${verificationToken}" >Click to verification</a>`,
-  // };
+  const verifyEmail = {
+    to: "boxel11098@cindalle.com",
+    subject: "Nodemailer test",
+    html: `<a target="_blank" href="${BASE_URL}/api/users/verify/${verificationToken}" >Click to verification</a>`,
+  };
 
-  // await sendEmail(verifyEmail);
+  await sendEmail(verifyEmail);
 
   const response = await fetch(`https://ui-avatars.com/api/?name=${username}`);
   if (response.ok) {
