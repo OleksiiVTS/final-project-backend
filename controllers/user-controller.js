@@ -29,7 +29,7 @@ const userRegister = async (req, res) => {
   const verifyEmail = {
     to: email,
     subject: "GooseTrack Verify email",
-    html: letter,
+    html: letter(BASE_URL, verificationToken),
   };
 
   await sendEmail(verifyEmail);
@@ -46,7 +46,6 @@ const userRegister = async (req, res) => {
   res.status(201).json({
     username: user.username,
     email: user.email,
-    verificationToken: verificationToken,
   });
 };
 
@@ -96,8 +95,8 @@ const repeatVerify = async (req, res) => {
 
   const verifyEmail = {
     to: user.email,
-    subject: "GooseTrack Verify email",
-    html: letter,
+    subject: "GooseTrack Repeat verify email",
+    html: letter(BASE_URL, verificationToken),
   };
   await sendEmail(verifyEmail);
   res.status(200).json({
