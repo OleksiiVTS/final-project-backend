@@ -2,7 +2,9 @@ import express from "express";
 import logger from "morgan";
 import cors from "cors";
 import swaggerUi from "swagger-ui-express";
-import swaggerDocument from "./swagger.json" assert { type: "json" };
+
+import { readFile } from "fs/promises";
+const swaggerDocument = JSON.parse(await readFile(new URL("./swagger.json", import.meta.url)));
 
 import authRouter from "./routes/api/auth-router.js";
 import reviewRouter from "./routes/api/review-router.js";
