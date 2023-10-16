@@ -8,9 +8,8 @@
   "servers": [{ "url": "https://final-project-backend-6uyr.onrender.com/api" }, { "url": "http://localhost:4000/api" }],
   "tags": [
     { "name": "Auth", "description": "Authorization endpoints" },
-    { "name": "Users", "description": "Users endpoints" },
-    { "name": "Reviews", "description": "Reviews endpoints" },
-    { "name": "Tasks", "description": "Tasks endpoints" }
+    { "name": "Tasks", "description": "Tasks endpoints" },
+    { "name": "Reviews", "description": "Reviews endpoints" }
   ],
   "paths": {
     "/users/register": {
@@ -162,7 +161,7 @@
             "required": true,
             "description": "Verification token received by the user",
             "schema": {
-              "$ref": "#components/schemas/VerifyRequest"
+              "type": "string"
             }
           }
         ],
@@ -253,6 +252,156 @@
           "500": {
             "description": "Server error",
             "content": {}
+          }
+        }
+      }
+    },
+    "/tasks": {
+      "get": {
+        "tags": ["Tasks"],
+        "summary": "Get all tasks",
+        "parameters": [],
+        "security": [{ "Bearer": [] }],
+        "requestBody": {
+          "description": "Object for getting all tasks",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#components/schemas/AllTasksRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful operation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#components/schemas/AllTasksResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad request (invalid request body)",
+            "content": {}
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {}
+          },
+          "404": {
+            "description": "Not found(404)",
+            "content": {}
+          },
+          "500": {
+            "description": "Server error",
+            "content": {}
+          }
+        }
+      },
+      "post": {
+        "tags": ["Tasks"],
+        "summary": "Add task",
+        "parameters": [],
+        "security": [{ "Bearer": [] }],
+        "requestBody": {
+          "description": "Object for adding",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#components/schemas/AddTaskRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Operation success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#components/schemas/AddTaskResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad request (invalid request body)",
+            "content": {}
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {}
+          },
+          "500": {
+            "description": "Server error",
+            "content": {}
+          }
+        }
+      }
+    },
+    "/tasks/{taskId}": {
+      "delete": {
+        "tags": ["Tasks"],
+        "summary": "Delete task by id",
+        "security": [{ "Bearer": [] }],
+        "parameters": [
+          {
+            "name": "taskId",
+            "in": "path",
+            "required": true,
+            "schema": { "type": "string" }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "Delete success",
+            "content": {}
+          },
+          "400": {
+            "description": "Bad request (invalid request body)",
+            "content": {}
+          },
+          "404": {
+            "description": "Task with such id not found",
+            "content": {}
+          }
+        }
+      },
+      "patch": {
+        "tags": ["Tasks"],
+        "summary": "Edit task by id",
+        "security": [{ "Bearer": [] }],
+        "parameters": [
+          {
+            "name": "taskId",
+            "in": "path",
+            "required": true,
+            "schema": { "type": "string" }
+          }
+        ],
+        "requestBody": {
+          "description": "Object for  update",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#components/schemas/UpdateTaskRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Update success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#components/schemas/UpdateTaskResponse"
+                }
+              }
+            }
           }
         }
       }
@@ -352,8 +501,7 @@
         "properties": {
           "avatar": {
             "type": "string",
-            "format": "binary",
-            "required": true
+            "format": "binary"
           },
           "username": {
             "type": "string",
@@ -445,6 +593,259 @@
             "type": "string",
             "description": "User's UI theme",
             "enum": ["dark", "light"]
+          }
+        }
+      },
+      "AllTasksRequest": {
+        "type": "object",
+        "required": ["date"],
+        "properties": {
+          "date": {
+            "type": "string",
+            "description": "Date to filter tasks",
+            "example": "2023-10-15",
+            "pattern": "^(202[3-9]|20[3-9][0-9])-(0[1-9]|1[0-2])-(0[1-9]|[1-2][0-9]|3[0-1])$"
+          }
+        }
+      },
+      "AllTasksResponse": {
+        "type": "array",
+        "items": {
+          "type": "object",
+          "properties": {
+            "_id": {
+              "type": "string",
+              "description": "Id this task",
+              "example": "task_id-1"
+            },
+            "title": {
+              "type": "string",
+              "description": "Title for task",
+              "maxLength": 250,
+              "example": "Do homework"
+            },
+            "start": {
+              "type": "string",
+              "description": "Start of task",
+              "example": "09:00"
+            },
+            "end": {
+              "type": "string",
+              "description": "End of task",
+              "example": "12:00"
+            },
+            "priority": {
+              "type": "string",
+              "description": "Priority of task",
+              "enum": ["low", "medium", "high"],
+              "example": "high"
+            },
+            "date": {
+              "type": "string",
+              "description": "Date of adding task",
+              "example": "2023-10-15"
+            },
+            "category": {
+              "type": "string",
+              "description": "Category of task",
+              "enum": ["to-do", "in-progress", "done"],
+              "example": "to-do"
+            },
+            "owner": {
+              "type": "string",
+              "description": "User ID of the task owner",
+              "example": "owner_id-1"
+            }
+          }
+        }
+      },
+      "AddTaskRequest": {
+        "type": "object",
+        "required": ["title", "start", "end", "priority", "date", "category"],
+        "properties": {
+          "title": {
+            "type": "string",
+            "description": "Title for task",
+            "maxLength": 250,
+            "example": "Do homework"
+          },
+          "start": {
+            "type": "string",
+            "description": "Start of task",
+            "pattern": "^(0[0-9]|1[0-9]|2[0-3]):[0-5][0-9]$",
+            "example": "09:00"
+          },
+          "end": {
+            "type": "string",
+            "description": "End of task",
+            "pattern": "^(0[0-9]|1[0-9]|2[0-3]):[0-5][0-9]$",
+            "example": "12:00"
+          },
+          "priority": {
+            "type": "string",
+            "description": "Priority of task",
+            "enum": ["low", "medium", "high"],
+            "example": "high"
+          },
+          "date": {
+            "type": "string",
+            "description": "Date of adding task",
+            "pattern": "^(202[3-9]|20[3-9][0-9])-(0[1-9]|1[0-2])-(0[1-9]|[1-2][0-9]|3[0-1])$",
+            "example": "2023-10-15"
+          },
+          "category": {
+            "type": "string",
+            "description": "Category of task",
+            "enum": ["to-do", "in-progress", "done"],
+            "example": "to-do"
+          }
+        }
+      },
+      "AddTaskResponse": {
+        "type": "object",
+        "properties": {
+          "title": {
+            "type": "string",
+            "description": "Title for task",
+            "example": "Do homework"
+          },
+          "start": {
+            "type": "string",
+            "description": "Start of task",
+            "example": "09:00"
+          },
+          "end": {
+            "type": "string",
+            "description": "End of task",
+            "example": "12:00"
+          },
+          "priority": {
+            "type": "string",
+            "description": "Priority of task",
+            "enum": ["low", "medium", "high"],
+            "example": "high"
+          },
+          "date": {
+            "type": "string",
+            "description": "Date of adding task",
+            "example": "2023-10-15"
+          },
+          "category": {
+            "type": "string",
+            "description": "Category of task",
+            "enum": ["to-do", "in-progress", "done"],
+            "example": "to-do"
+          },
+          "owner": {
+            "type": "string",
+            "description": "Owner's id"
+          },
+          "_id": {
+            "type": "string",
+            "description": "Task id"
+          },
+          "createdAt": {
+            "type": "string",
+            "description": "Date of creating task"
+          },
+          "updatedAt": {
+            "type": "string",
+            "description": "Date of last updating task"
+          }
+        }
+      },
+      "UpdateTaskRequest": {
+        "type": "object",
+        "properties": {
+          "title": {
+            "type": "string",
+            "description": "Title for task",
+            "maxLength": 250,
+            "example": "Do homework"
+          },
+          "start": {
+            "type": "string",
+            "description": "Start of task",
+            "pattern": "^(0[0-9]|1[0-9]|2[0-3]):[0-5][0-9]$",
+            "example": "09:00"
+          },
+          "end": {
+            "type": "string",
+            "description": "End of task",
+            "pattern": "^(0[0-9]|1[0-9]|2[0-3]):[0-5][0-9]$",
+            "example": "12:00"
+          },
+          "priority": {
+            "type": "string",
+            "description": "Priority of task",
+            "enum": ["low", "medium", "high"],
+            "example": "high"
+          },
+          "date": {
+            "type": "string",
+            "description": "Date of adding task",
+            "pattern": "^(202[3-9]|20[3-9][0-9])-(0[1-9]|1[0-2])-(0[1-9]|[1-2][0-9]|3[0-1])$",
+            "example": "2023-10-15"
+          },
+          "category": {
+            "type": "string",
+            "description": "Category of task",
+            "enum": ["to-do", "in-progress", "done"],
+            "example": "to-do"
+          }
+        },
+        "required": ["taskId"]
+      },
+      "UpdateTaskResponse": {
+        "type": "object",
+        "properties": {
+          "title": {
+            "type": "string",
+            "description": "Title for task",
+            "example": "Do homework"
+          },
+          "start": {
+            "type": "string",
+            "description": "Start of task",
+            "example": "09:00"
+          },
+          "end": {
+            "type": "string",
+            "description": "End of task",
+            "example": "12:00"
+          },
+          "priority": {
+            "type": "string",
+            "description": "Priority of task",
+            "enum": ["low", "medium", "high"],
+            "example": "high"
+          },
+          "date": {
+            "type": "string",
+            "description": "Date of adding task",
+            "example": "2023-10-15"
+          },
+          "category": {
+            "type": "string",
+            "description": "Category of task",
+            "enum": ["to-do", "in-progress", "done"],
+            "example": "to-do"
+          },
+          "owner": {
+            "type": "string",
+            "description": "Owner's id"
+          },
+          "_id": {
+            "type": "string",
+            "description": "Task id"
+          },
+          "createdAt": {
+            "type": "string",
+            "description": "Date of creating task"
+          },
+          "updatedAt": {
+            "type": "string",
+            "description": "Date of last updating task"
           }
         }
       }
