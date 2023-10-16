@@ -46,6 +46,7 @@ const userRegister = async (req, res) => {
   res.status(201).json({
     username: user.username,
     email: user.email,
+    verificationToken: verificationToken,
   });
 };
 
