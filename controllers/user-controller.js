@@ -5,7 +5,7 @@ import Jimp from "jimp";
 import fs from "fs/promises";
 import { nanoid } from "nanoid";
 import "dotenv/config.js";
-import { HttpError, cloudinary, sendEmail } from "../helpers/index.js";
+import { HttpError, cloudinary, sendEmail, letter } from "../helpers/index.js";
 import { ctrlWrapper } from "../decorators/index.js";
 
 const { JWT_SECRET, BASE_URL } = process.env;
@@ -25,12 +25,11 @@ const userRegister = async (req, res) => {
     password: hashPassword,
     verificationToken,
   });
-  //const mail = verifyEmail({ BASE_URL, verificationToken });
 
   const verifyEmail = {
-    to: "boxel11098@cindalle.com",
-    subject: "Nodemailer test",
-    html: `<a target="_blank" href="${BASE_URL}/api/users/verify/${verificationToken}" >Click to verification</a>`,
+    to: email,
+    subject: "GooseTrack Verify email",
+    html: letter,
   };
 
   await sendEmail(verifyEmail);
@@ -96,8 +95,8 @@ const repeatVerify = async (req, res) => {
 
   const verifyEmail = {
     to: user.email,
-    subject: "Nodemailer test",
-    html: `<a target="_blank" href="${BASE_URL}/api/users/verify/${user.verificationToken}" >Click to verification</a>`,
+    subject: "GooseTrack Verify email",
+    html: letter,
   };
   await sendEmail(verifyEmail);
   res.status(200).json({
