@@ -30,7 +30,7 @@ const userRegister = async (req, res) => {
   });
 
   const avatarURL = await generateAvatar(username);
-  await User.findByIdAndUpdate(user._id, { avatarURL }, { new: true });
+  await User.findByIdAndUpdate(newUser._id, { avatarURL }, { new: true });
 
   // const verifyEmail = {
   //   to: email,
