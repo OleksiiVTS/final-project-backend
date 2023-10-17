@@ -8,7 +8,7 @@ import {
   HttpError,
   cloudinary,
   sendEmail,
-  letter,
+  // letter,
   generateAvatar,
 } from "../helpers/index.js";
 import { ctrlWrapper } from "../decorators/index.js";
