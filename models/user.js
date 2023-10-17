@@ -111,7 +111,7 @@ export const authLoginSchema = Joi.object({
 });
 
 export const authUpdateSchema = Joi.object({
-  username: Joi.string().min(4).pattern().empty(false).messages({
+  username: Joi.string().min(4).empty(false).messages({
     "string.base": "The username must be a string.",
     "string.empty": "The username must not be empty.",
   }),
@@ -136,7 +136,7 @@ export const authUpdateSchema = Joi.object({
     "string.empty": "The skype must not be empty.",
     "string.pattern.base": "The email must be in format +380111111111",
   }),
-  theme: Joi.string().valid(themeList).empty(false).messages({
+  theme: Joi.string().valid(...themeList).empty(false).messages({
     "string.base": "The theme must be a string.",
     "string.empty": "The theme must not be empty.",
     "string.valid": "The theme must be either 'dark' or 'light'.",
