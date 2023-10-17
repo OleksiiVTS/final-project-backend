@@ -39,9 +39,12 @@ const updateReview = async (req, res) => {
     { owner: req.user },
     {
       ...req.body,
-      owner: req.user,
+
+   
+
     },
     { new: true }
+
   );
   if (!result) {
     throw HttpError(404, "Review not found");

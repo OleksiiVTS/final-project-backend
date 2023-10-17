@@ -7,8 +7,9 @@ import "dotenv/config.js";
 import {
   HttpError,
   cloudinary,
-  generateAvatar,
   sendEmail,
+  letter,
+  generateAvatar,
 } from "../helpers/index.js";
 import { ctrlWrapper } from "../decorators/index.js";
 
@@ -33,8 +34,8 @@ const userRegister = async (req, res) => {
 
   // const verifyEmail = {
   //   to: email,
-  //   subject: "Nodemailer test",
-  //   html: `<a target="_blank" href="${BASE_URL}/api/users/verify/${verificationToken}" >Click to verification</a>`,
+  //   subject: "GooseTrack Verify email",
+  //   html: letter(BASE_URL, verificationToken),
   // };
 
   // await sendEmail(verifyEmail);
@@ -42,7 +43,7 @@ const userRegister = async (req, res) => {
   res.status(201).json({
     username: newUser.username,
     email: newUser.email,
-    verificationToken: verificationToken,
+    verificationToken,
   });
 };
 
@@ -92,8 +93,8 @@ const repeatVerify = async (req, res) => {
 
   const verifyEmail = {
     to: user.email,
-    subject: "Nodemailer test",
-    html: `<a target="_blank" href="${BASE_URL}/api/users/verify/${user.verificationToken}" >Click to verification</a>`,
+    subject: "GooseTrack Repeat verify email",
+    html: letter(BASE_URL, verificationToken),
   };
   await sendEmail(verifyEmail);
   res.status(200).json({
