@@ -5,7 +5,7 @@ import Jimp from "jimp";
 import fs from "fs/promises";
 import { nanoid } from "nanoid";
 import "dotenv/config.js";
-import { HttpError, cloudinary, sendEmail } from "../helpers/index.js";
+import { HttpError, cloudinary, sendEmail, letter } from "../helpers/index.js";
 import { ctrlWrapper } from "../decorators/index.js";
 
 const { JWT_SECRET, BASE_URL } = process.env;
@@ -26,13 +26,13 @@ const userRegister = async (req, res) => {
     verificationToken,
   });
 
-  // const verifyEmail = {
-  //   to: email,
-  //   subject: "Nodemailer test",
-  //   html: `<a target="_blank" href="${BASE_URL}/api/users/verify/${verificationToken}" >Click to verification</a>`,
-  // };
+  const verifyEmail = {
+    to: email,
+    subject: "GooseTrack Verify email",
+    html: letter(BASE_URL, verificationToken),
+  };
 
-  // await sendEmail(verifyEmail);
+  await sendEmail(verifyEmail);
 
   const response = await fetch(`https://ui-avatars.com/api/?name=${username}`);
   if (response.ok) {
@@ -46,7 +46,6 @@ const userRegister = async (req, res) => {
   res.status(201).json({
     username: user.username,
     email: user.email,
-    verificationToken: verificationToken,
   });
 };
 
@@ -96,8 +95,8 @@ const repeatVerify = async (req, res) => {
 
   const verifyEmail = {
     to: user.email,
-    subject: "Nodemailer test",
-    html: `<a target="_blank" href="${BASE_URL}/api/users/verify/${user.verificationToken}" >Click to verification</a>`,
+    subject: "GooseTrack Repeat verify email",
+    html: letter(BASE_URL, verificationToken),
   };
   await sendEmail(verifyEmail);
   res.status(200).json({
