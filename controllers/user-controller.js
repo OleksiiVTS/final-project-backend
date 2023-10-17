@@ -50,7 +50,7 @@ const getVerification = async (req, res) => {
   const verificationToken = req.params.verificationToken;
   const user = await User.findOne({ verificationToken });
   if (!user) {
-    throw HttpError(404, `"User not found"`);
+    throw HttpError(404, "Sorry! User not found.");
   }
   const { _id: id } = user;
   await User.findByIdAndUpdate(id, { verify: true, verificationToken: null });
@@ -64,14 +64,14 @@ const userLogin = async (req, res) => {
   const { email, password } = req.body;
   const user = await User.findOne({ email });
   if (!user) {
-    throw HttpError(401, `"Email or password is wrong"`);
+    throw HttpError(401, "Email or password is wrong");
   }
   // if (!user.verify) {
   //   throw HttpError(401, `"User is not verify"`);
   // }
   const passwordCompare = await bcrypt.compare(password, user.password);
   if (!passwordCompare) {
-    throw HttpError(401, `"Email or password is wrong"`);
+    throw HttpError(401, "Email or password is wrong");
   }
   const { _id: id } = user;
   const payload = { id };
@@ -87,7 +87,7 @@ const repeatVerify = async (req, res) => {
   const { email } = req.body;
   const user = await User.findOne({ email });
   if (user.verify) {
-    throw HttpError(400, `"Verification has already been passed"`);
+    throw HttpError(400, "Verification has already been passed");
   }
 
   const verifyEmail = {
