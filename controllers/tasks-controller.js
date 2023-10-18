@@ -9,6 +9,7 @@ const getAllTasks = async (req, res) => {
     { owner, date: { $regex: date, $options: "i" } },
     "-createdAt -updatedAt"
   );
+  if (!date) throw HttpError(400, `Bad Request`);
   res.json(result);
 };
 
