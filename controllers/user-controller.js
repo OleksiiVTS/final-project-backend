@@ -16,7 +16,7 @@ import { ctrlWrapper } from "../decorators/index.js";
 const { BASE_URL } = process.env;
 
 const userRegister = async (req, res) => {
-  const { username, email, password } = req.body;
+  const { email, password } = req.body;
   const user = await User.findOne({ email });
   if (user) throw HttpError(409, "Sorry! But this email already use.");
 
@@ -29,10 +29,9 @@ const userRegister = async (req, res) => {
     verificationToken,
   });
 
-  const avatarURL = await generateAvatar(username);
-  await User.findByIdAndUpdate(newUser._id, { avatarURL }, { new: true });
+  await generateAvatar(newUser);
 
-  const token = await generateToken(newUser);
+  await generateToken(newUser);
 
   // const verifyEmail = {
   //   to: email,
@@ -42,7 +41,7 @@ const userRegister = async (req, res) => {
 
   // await sendEmail(verifyEmail);
 
-  res.status(201).json({ token });
+  res.status(201).json(newUser);
 };
 
 const getVerification = async (req, res) => {
@@ -73,11 +72,9 @@ const userLogin = async (req, res) => {
     throw HttpError(401, "Email or password is wrong");
   }
 
-  const token = await generateToken(user);
+  await generateToken(user);
 
-  res.status(200).json({
-    token,
-  });
+  res.status(200).json(user);
 };
 
 const repeatVerify = async (req, res) => {
@@ -146,11 +143,11 @@ const updateUser = async (req, res) => {
 };
 
 const getCurrent = async (req, res) => {
-  const { username, email, phone, skype, birthday, theme, avatarURL } =
+  const {_id, username, email, phone, skype, birthday, theme, avatarURL } =
     req.user;
   res
     .status(200)
-    .json({ username, email, phone, skype, birthday, theme, avatarURL });
+    .json({ _id, username, email, phone, skype, birthday, theme, avatarURL });
 };
 
 const userLogout = async (req, res) => {
