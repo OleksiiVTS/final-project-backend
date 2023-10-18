@@ -1,6 +1,5 @@
 import User from "../models/user.js";
 import bcrypt from "bcryptjs";
-import jwt from "jsonwebtoken";
 import fs from "fs/promises";
 import { nanoid } from "nanoid";
 import "dotenv/config.js";
@@ -10,10 +9,11 @@ import {
   sendEmail,
   // letter,
   generateAvatar,
+  generateToken,
 } from "../helpers/index.js";
 import { ctrlWrapper } from "../decorators/index.js";
 
-const { JWT_SECRET, BASE_URL } = process.env;
+const { BASE_URL } = process.env;
 
 const userRegister = async (req, res) => {
   const { username, email, password } = req.body;
@@ -32,6 +32,8 @@ const userRegister = async (req, res) => {
   const avatarURL = await generateAvatar(username);
   await User.findByIdAndUpdate(newUser._id, { avatarURL }, { new: true });
 
+  const token = await generateToken(newUser);
+
   // const verifyEmail = {
   //   to: email,
   //   subject: "GooseTrack Verify email",
@@ -40,11 +42,7 @@ const userRegister = async (req, res) => {
 
   // await sendEmail(verifyEmail);
 
-  res.status(201).json({
-    username: newUser.username,
-    email: newUser.email,
-    verificationToken,
-  });
+  res.status(201).json({ token });
 };
 
 const getVerification = async (req, res) => {
@@ -74,10 +72,8 @@ const userLogin = async (req, res) => {
   if (!passwordCompare) {
     throw HttpError(401, "Email or password is wrong");
   }
-  const { _id: id } = user;
-  const payload = { id };
-  const token = jwt.sign(payload, JWT_SECRET, { expiresIn: "23h" });
-  await User.findByIdAndUpdate(id, { token });
+
+  const token = await generateToken(user);
 
   res.status(200).json({
     token,
@@ -138,7 +134,15 @@ const updateUser = async (req, res) => {
 
   if (!updatedUser) throw HttpError(400);
 
-  res.json(updatedUser);
+  res.json({
+    avatarURL: updatedUser.avatarURL,
+    username: updatedUser.username,
+    email: updatedUser.email,
+    phone: updatedUser.phone,
+    skype: updatedUser.skype,
+    birthday: updatedUser.birthday,
+    theme: updatedUser.theme,
+  });
 };
 
 const getCurrent = async (req, res) => {
