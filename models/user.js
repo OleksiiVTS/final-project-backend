@@ -67,7 +67,6 @@ const userSchema = new Schema(
     },
     verificationToken: {
       type: String,
-      required: [true, "Verification token is required"],
     },
   },
   { versionKey: false, timestamps: true }
@@ -136,11 +135,14 @@ export const authUpdateSchema = Joi.object({
     "string.empty": "The skype must not be empty.",
     "string.pattern.base": "The email must be in format +380111111111",
   }),
-  theme: Joi.string().valid(...themeList).empty(false).messages({
-    "string.base": "The theme must be a string.",
-    "string.empty": "The theme must not be empty.",
-    "string.valid": "The theme must be either 'dark' or 'light'.",
-  }),
+  theme: Joi.string()
+    .valid(...themeList)
+    .empty(false)
+    .messages({
+      "string.base": "The theme must be a string.",
+      "string.empty": "The theme must not be empty.",
+      "string.valid": "The theme must be either 'dark' or 'light'.",
+    }),
   avatarURL: Joi.string().empty(false).messages({
     "string.base": "The avatarURL must be a string.",
     "string.empty": "The avatarURL must not be empty.",

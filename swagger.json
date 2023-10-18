@@ -5,7 +5,10 @@
     "title": "GooseTrack",
     "description": "This is a sample documentation for the GooseTrack application based on OpenApi 3.0.1. This documentation provides access to the core functionalities of our service. The API enables you to retrieve and send data, manage resources, and interact with the application. We continuously work on improving it, updating, and expanding its functionality. Please review our documentation to learn how to get started with our API and seamlessly integrate it into your projects."
   },
-  "servers": [{ "url": "https://final-project-backend-6uyr.onrender.com/api" }, { "url": "http://localhost:4000/api" }],
+  "servers": [
+    { "url": "https://final-project-backend-6uyr.onrender.com/api" },
+    { "url": "http://localhost:4000/api" }
+  ],
   "tags": [
     { "name": "Auth", "description": "Authorization endpoints" },
     { "name": "Tasks", "description": "Tasks endpoints" },
@@ -260,18 +263,16 @@
       "get": {
         "tags": ["Tasks"],
         "summary": "Get all tasks",
-        "parameters": [],
-        "security": [{ "Bearer": [] }],
-        "requestBody": {
-          "description": "Object for getting all tasks",
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#components/schemas/AllTasksRequest"
-              }
-            }
+        "parameters": [
+          {
+            "name": "date",
+            "in": "query",
+            "example": "10",
+            "pattern": "^(1[0-2]|[1-9])$",
+            "description": "Month of year"
           }
-        },
+        ],
+        "security": [{ "Bearer": [] }],
         "responses": {
           "200": {
             "description": "Successful operation",
@@ -538,7 +539,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#components/schemas/ReviewResponse"
+                  "$ref": "#components/schemas/UpdateReviewResponse"
                 }
               }
             }
@@ -607,15 +608,9 @@
       "RegistrationResponse": {
         "type": "object",
         "properties": {
-          "username": {
+          "token": {
             "type": "string",
-            "description": "User's name"
-          },
-          "email": {
-            "type": "string",
-            "description": "User's email",
-            "format": "email",
-            "pattern": "^[\\w-\\.]+@([\\w-]+\\.)+[\\w-]{2,4}$"
+            "example": "token"
           }
         }
       },
@@ -698,6 +693,11 @@
           "birthday": {
             "type": "string",
             "description": "User's birthday"
+          },
+          "theme": {
+            "type": "string",
+            "description": "User's UI theme",
+            "enum": ["dark", "light"]
           }
         }
       },
@@ -731,6 +731,11 @@
           "birthday": {
             "type": "string",
             "description": "User's birthday"
+          },
+          "theme": {
+            "type": "string",
+            "description": "User's UI theme",
+            "enum": ["dark", "light"]
           }
         }
       },
@@ -765,18 +770,11 @@
             "type": "string",
             "description": "User's UI theme",
             "enum": ["dark", "light"]
-          }
-        }
-      },
-      "AllTasksRequest": {
-        "type": "object",
-        "required": ["date"],
-        "properties": {
-          "date": {
+          },
+          "avatarURL": {
             "type": "string",
-            "description": "Date to filter tasks",
-            "example": "2023-10-15",
-            "pattern": "^(202[3-9]|20[3-9][0-9])-(0[1-9]|1[0-2])-(0[1-9]|[1-2][0-9]|3[0-1])$"
+            "description": "Avatar link",
+            "example": "http://avatar_link.com"
           }
         }
       },
@@ -876,53 +874,58 @@
       "AddTaskResponse": {
         "type": "object",
         "properties": {
-          "title": {
-            "type": "string",
-            "description": "Title for task",
-            "example": "Do homework"
-          },
-          "start": {
-            "type": "string",
-            "description": "Start of task",
-            "example": "09:00"
-          },
-          "end": {
-            "type": "string",
-            "description": "End of task",
-            "example": "12:00"
-          },
-          "priority": {
-            "type": "string",
-            "description": "Priority of task",
-            "enum": ["low", "medium", "high"],
-            "example": "high"
-          },
-          "date": {
-            "type": "string",
-            "description": "Date of adding task",
-            "example": "2023-10-15"
-          },
-          "category": {
-            "type": "string",
-            "description": "Category of task",
-            "enum": ["to-do", "in-progress", "done"],
-            "example": "to-do"
-          },
-          "owner": {
-            "type": "string",
-            "description": "Owner's id"
-          },
-          "_id": {
-            "type": "string",
-            "description": "Task id"
-          },
-          "createdAt": {
-            "type": "string",
-            "description": "Date of creating task"
-          },
-          "updatedAt": {
-            "type": "string",
-            "description": "Date of last updating task"
+          "task": {
+            "type": "object",
+            "properties": {
+              "title": {
+                "type": "string",
+                "description": "Title for task",
+                "example": "Do homework"
+              },
+              "start": {
+                "type": "string",
+                "description": "Start of task",
+                "example": "09:00"
+              },
+              "end": {
+                "type": "string",
+                "description": "End of task",
+                "example": "12:00"
+              },
+              "priority": {
+                "type": "string",
+                "description": "Priority of task",
+                "enum": ["low", "medium", "high"],
+                "example": "high"
+              },
+              "date": {
+                "type": "string",
+                "description": "Date of adding task",
+                "example": "2023-10-15"
+              },
+              "category": {
+                "type": "string",
+                "description": "Category of task",
+                "enum": ["to-do", "in-progress", "done"],
+                "example": "to-do"
+              },
+              "owner": {
+                "type": "string",
+                "description": "Owner's id"
+              },
+              "_id": {
+                "type": "string",
+                "description": "Task id"
+              },
+              "createdAt": {
+                "type": "string",
+                "description": "Date of creating task"
+              },
+              "updatedAt": {
+                "type": "string",
+                "description": "Date of last updating task"
+              }
+            }
           }
         }
       },
@@ -1134,6 +1137,39 @@
             "example": 5,
             "min": 1,
             "max": 5
+          }
+        }
+      },
+      "UpdateReviewResponse": {
+        "type": "object",
+        "properties": {
+          "_id": {
+            "type": "string",
+            "description": "Review's id",
+            "example": "review_id-1"
+          },
+          "comment": {
+            "type": "string",
+            "description": "Review's comment",
+            "example": "Amazing web app!"
+          },
+          "rating": {
+            "type": "number",
+            "description": "Review's rating",
+            "example": 5
+          },
+          "owner": {
+            "type": "string",
+            "description": "Owner's id",
+            "example": "owner_id-1"
+          },
+          "createdAt": {
+            "type": "string",
+            "description": "Date of creating review"
+          },
+          "updatedAt": {
+            "type": "string",
+            "description": "Date of last updating review"
           }
         }
       }
