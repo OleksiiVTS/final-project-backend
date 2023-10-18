@@ -1,7 +1,6 @@
-const verifyEmail = (BASE_URL, verificationToken) = {
-  to: email,
-  subject: "Nodemailer test",
-  html: `<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+const letter = (url, token) => {
+  return `<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
       <html dir="ltr" xmlns="http://www.w3.org/1999/xhtml" xmlns:o="urn:schemas-microsoft-com:office:office" lang="uk">
       <head>
       <meta charset="UTF-8">
@@ -9,7 +8,7 @@ const verifyEmail = (BASE_URL, verificationToken) = {
       <meta name="x-apple-disable-message-reformatting">
       <meta http-equiv="X-UA-Compatible" content="IE=edge">
       <meta content="telephone=no" name="format-detection">
-      <title>Новий лист</title><!--[if (mso 16)]>
+      <title></title><!--[if (mso 16)]>
       <style type="text/css">
       a {text-decoration: none;}
       </style>
@@ -110,7 +109,7 @@ const verifyEmail = (BASE_URL, verificationToken) = {
       <w:anchorlock></w:anchorlock>
       <center style='color:#ffffff; font-family:arial, "helvetica neue", helvetica, sans-serif; font-size:18px; font-weight:400; line-height:18px; mso-text-raise:1px'>CONFIRM YOUR EMAIL</center>
       </v:roundrect></a>
-      <![endif]--><!--[if !mso]><!-- --><span class="msohide es-button-border" style="border-style:solid;border-color:#2CB543;background:#3e85f3;border-width:0px;display:inline-block;border-radius:6px;width:auto;mso-hide:all"><a href="${BASE_URL}/api/users/verify/${verificationToken}" class="es-button" target="_blank" style="mso-style-priority:100 !important;text-decoration:none;-webkit-text-size-adjust:none;-ms-text-size-adjust:none;mso-line-height-rule:exactly;color:#FFFFFF;font-size:20px;padding:10px 30px 10px 30px;display:inline-block;background:#3e85f3;border-radius:6px;font-family:arial, 'helvetica neue', helvetica, sans-serif;font-weight:normal;font-style:normal;line-height:24px;width:auto;text-align:center;mso-padding-alt:0;mso-border-alt:10px solid #3E85F3;padding-left:30px;padding-right:30px">CONFIRM YOUR EMAIL</a></span><!--<![endif]--></td>
+      <![endif]--><!--[if !mso]><!-- --><span class="msohide es-button-border" style="border-style:solid;border-color:#2CB543;background:#3e85f3;border-width:0px;display:inline-block;border-radius:6px;width:auto;mso-hide:all"><a href="${url}/api/users/verify/${token}" class="es-button" target="_blank" style="mso-style-priority:100 !important;text-decoration:none;-webkit-text-size-adjust:none;-ms-text-size-adjust:none;mso-line-height-rule:exactly;color:#FFFFFF;font-size:20px;padding:10px 30px 10px 30px;display:inline-block;background:#3e85f3;border-radius:6px;font-family:arial, 'helvetica neue', helvetica, sans-serif;font-weight:normal;font-style:normal;line-height:24px;width:auto;text-align:center;mso-padding-alt:0;mso-border-alt:10px solid #3E85F3;padding-left:30px;padding-right:30px">CONFIRM YOUR EMAIL</a></span><!--<![endif]--></td>
       </tr>
       <tr>
       <td align="center" class="es-m-p0r es-m-p0l" style="Margin:0;padding-top:5px;padding-bottom:5px;padding-left:40px;padding-right:40px"><p style="Margin:0;-webkit-text-size-adjust:none;-ms-text-size-adjust:none;mso-line-height-rule:exactly;font-family:arial, 'helvetica neue', helvetica, sans-serif;line-height:21px;color:#333333;font-size:14px">Once confirmed, this email will be uniquely associated with your account.</p></td>
@@ -144,7 +143,7 @@ const verifyEmail = (BASE_URL, verificationToken) = {
       </table></td>
       </tr>
       <tr>
-      <td align="center" style="padding:0;Margin:0;padding-bottom:35px"><p style="Margin:0;-webkit-text-size-adjust:none;-ms-text-size-adjust:none;mso-line-height-rule:exactly;font-family:arial, 'helvetica neue', helvetica, sans-serif;line-height:18px;color:#333333;font-size:12px">Style Casual&nbsp;© 2021 Style Casual, Inc. All Rights Reserved.</p><p style="Margin:0;-webkit-text-size-adjust:none;-ms-text-size-adjust:none;mso-line-height-rule:exactly;font-family:arial, 'helvetica neue', helvetica, sans-serif;line-height:18px;color:#333333;font-size:12px">4562 Hazy Panda Limits, Chair Crossing, Kentucky, US, 607898</p></td>
+      <td align="center" style="padding:0;Margin:0;padding-bottom:35px"><p style="Margin:0;-webkit-text-size-adjust:none;-ms-text-size-adjust:none;mso-line-height-rule:exactly;font-family:arial, 'helvetica neue', helvetica, sans-serif;line-height:18px;color:#333333;font-size:12px">Style Casual&nbsp;© 2023 Style Casual, Inc. All Rights Reserved.</p><p style="Margin:0;-webkit-text-size-adjust:none;-ms-text-size-adjust:none;mso-line-height-rule:exactly;font-family:arial, 'helvetica neue', helvetica, sans-serif;line-height:18px;color:#333333;font-size:12px">Team 4, GoIT, Kyiv, Ukraine</p></td>
       </tr>
       <tr>
       <td style="padding:0;Margin:0">
@@ -166,7 +165,7 @@ const verifyEmail = (BASE_URL, verificationToken) = {
       </table>
       </div>
       </body>
-      </html>`,
+      </html>`;
 };
 
-export default verifyEmail
+export default letter;
