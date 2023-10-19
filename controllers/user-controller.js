@@ -96,7 +96,7 @@ const repeatVerify = async (req, res) => {
 };
 
 const updateUser = async (req, res) => {
-  const { _id: id, public_id: oldPublic_id } = req.user;
+  const { _id: id } = req.user;
   const { email } = req.body;
 
   const user = await User.findOne({ email });
@@ -118,8 +118,10 @@ const updateUser = async (req, res) => {
 
   if (tempPath) {
     await fs.unlink(tempPath);
-    if (oldPublic_id) {
-      await cloudinary.uploader.destroy(oldPublic_id).then((result) => result);
+    if (user.public_id) {
+      await cloudinary.uploader
+        .destroy(user.public_id)
+        .then((result) => result);
     }
   }
 
@@ -139,7 +141,7 @@ const updateUser = async (req, res) => {
 };
 
 const getCurrent = async (req, res) => {
-  const {_id, username, email, phone, skype, birthday, theme, avatarURL } =
+  const { _id, username, email, phone, skype, birthday, theme, avatarURL } =
     req.user;
   res
     .status(200)
