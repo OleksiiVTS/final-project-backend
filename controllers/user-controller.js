@@ -98,7 +98,6 @@ const repeatVerify = async (req, res) => {
 const updateUser = async (req, res) => {
   const { _id: id, email } = req.user;
 
-  console.log(req.user);
   const user = await User.findOne({ email });
   if (!user)
     throw HttpError(
