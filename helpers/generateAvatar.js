@@ -1,11 +1,17 @@
-const generateAvatar = async (name) => {
-  const response = await fetch(`https://ui-avatars.com/api/?name=${name}`);
+const generateAvatar = async (user) => {
+  const firstLetterName = user.username[0];
+
+  const response = await fetch(
+    `https://ui-avatars.com/api/?name=${firstLetterName}`
+  );
+
   if (response.ok) {
-    const firstLetterName = name[0];
     const avatar = `https://ui-avatars.com/api/?name=${firstLetterName}&size=256`;
+    user.avatarURL = avatar;
+    await user.save();
     return avatar;
   } else {
-    throw HttpError(response.status);
+    throw new HttpError(response.status);
   }
 };
 
