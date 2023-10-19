@@ -96,11 +96,11 @@ const repeatVerify = async (req, res) => {
 };
 
 const updateUser = async (req, res) => {
-  const { _id: id } = req.user;
-  const { email } = req.body;
+  const { _id: id, email } = req.user;
 
+  console.log(req.user);
   const user = await User.findOne({ email });
-  if (user)
+  if (!user)
     throw HttpError(
       409,
       "Sorry, this email is already in use by another registered user. Please provide a different email address."
