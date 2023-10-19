@@ -121,7 +121,9 @@ const updateUser = async (req, res) => {
 
   if (tempPath) {
     await fs.unlink(tempPath);
-    await cloudinary.uploader.destroy(oldPublic_id).then((result) => result);
+    if (oldPublic_id) {
+      await cloudinary.uploader.destroy(oldPublic_id).then((result) => result);
+    }
   }
 
   const bodyForUpdate = tempPath
@@ -135,13 +137,7 @@ const updateUser = async (req, res) => {
   if (!updatedUser) throw HttpError(400);
 
   res.json({
-    avatarURL: updatedUser.avatarURL,
-    username: updatedUser.username,
-    email: updatedUser.email,
-    phone: updatedUser.phone,
-    skype: updatedUser.skype,
-    birthday: updatedUser.birthday,
-    theme: updatedUser.theme,
+    updatedUser,
   });
 };
 

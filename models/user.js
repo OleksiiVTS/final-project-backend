@@ -49,6 +49,9 @@ const userSchema = new Schema(
     avatarURL: {
       type: String,
     },
+    public_id: {
+      type: String,
+    },
     theme: {
       type: String,
       enum: themeList,
