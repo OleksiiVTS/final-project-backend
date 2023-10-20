@@ -14,11 +14,13 @@ const authenticate = async (req, res, next) => {
     throw HttpError(401);
   }
   try {
-    const { id } = jwt.verify(token, JWT_SECRET);
-    const user = await User.findById(id).populate(
+    const { email } = jwt.verify(token, JWT_SECRET);
+    const user = await User.findOne({ email }).populate(
       "ownReview",
       "comment rating _id"
     );
+    console.log("user: ", user);
+    console.log(" user.token: ", user.token);
     if (!user || user.token === "") {
       throw HttpError(401, "Not authorized");
     }
