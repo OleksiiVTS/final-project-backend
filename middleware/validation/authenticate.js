@@ -19,8 +19,7 @@ const authenticate = async (req, res, next) => {
       "ownReview",
       "comment rating _id"
     );
-    console.log("user: ", user);
-    console.log(" user.token: ", user.token);
+
     if (!user || user.token === "") {
       throw HttpError(401, "Not authorized");
     }

@@ -15,36 +15,28 @@ const listAllReviews = async (req, res) => {
 };
 
 const addReview = async (req, res) => {
-  const { _id: owner } = req.user;
-  const existingReview = await Review.findOne({ owner });
-  if (existingReview) {
+  const existingUser = await Review.findOne({ owner: req.user });
+  if (existingUser) {
     throw HttpError(409, "The user has already left a review");
   }
 
   const result = await Review.create({
     ...req.body,
-    owner,
+    owner: req.user,
   });
-
-  const review = {
-    _id: result._id,
-    comment: result.comment,
-    rating: result.rating,
-    owner: result.owner,
-  };
-
-  await User.findByIdAndUpdate(owner, {
-    ownReview: review,
+  const { _id, comment, rating, owner } = result;
+  const { avatarURL, username } = owner;
+  res.status(201).json({
+    _id,
+    comment,
+    rating,
+    owner: { avatarURL, username, _id: owner._id },
   });
-
-  res.status(201).json(review);
 };
 
 const updateReview = async (req, res) => {
-  const { _id: owner } = req.user;
-
   const result = await Review.findOneAndUpdate(
-    { owner },
+    { owner: req.user },
     {
       ...req.body,
     },
@@ -53,11 +45,6 @@ const updateReview = async (req, res) => {
   if (!result) {
     throw HttpError(404, "Review not found");
   }
-
-  await User.findByIdAndUpdate(owner, {
-    ownReview: result,
-  });
-
   res.json(result);
 };
 

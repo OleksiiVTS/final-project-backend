@@ -61,16 +61,24 @@ const getVerification = async (req, res) => {
 const userLogin = async (req, res) => {
   const { email, password } = req.body;
   const user = await User.findOne({ email });
-  if (!user) throw HttpError(401, "Email or password is wrong");
-
+  if (!user) {
+    throw HttpError(401, "Email or password is wrong");
+  }
   // if (!user.verify) {
   //   throw HttpError(401, `"User is not verify"`);
   // }
   const passwordCompare = await bcrypt.compare(password, user.password);
-  if (!passwordCompare) throw HttpError(401, "Email or password is wrong");
+  if (!passwordCompare) {
+    throw HttpError(401, "Email or password is wrong");
+  }
 
   const token = generateToken({ email });
-  const updatedUser = await User.findOneAndUpdate({ email }, {token}, {new: true});
+
+  const updatedUser = await User.findOneAndUpdate(
+    { email },
+    { token },
+    { new: true }
+  );
 
   res.status(200).json(updatedUser);
 };
@@ -139,11 +147,12 @@ const updateUser = async (req, res) => {
 
 const getCurrent = async (req, res) => {
   const user = { ...req.user._doc };
-
   delete user.createdAt;
   delete user.updatedAt;
   delete user.password;
+  // const { email } = req.user;
 
+  // const user = await User.findOne({ email }).populate("ownReview", "comment rating owner");
   res.status(200).json(user);
 };
 
