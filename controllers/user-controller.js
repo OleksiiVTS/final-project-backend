@@ -140,11 +140,13 @@ const updateUser = async (req, res) => {
 };
 
 const getCurrent = async (req, res) => {
-  const { _id, username, email, phone, skype, birthday, theme, avatarURL } =
-    req.user;
-  res
-    .status(200)
-    .json({ _id, username, email, phone, skype, birthday, theme, avatarURL });
+  const user = { ...req.user._doc };
+
+  delete user.createdAt;
+  delete user.updatedAt;
+  delete user.password;
+
+  res.status(200).json(user);
 };
 
 const userLogout = async (req, res) => {

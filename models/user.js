@@ -71,6 +71,11 @@ const userSchema = new Schema(
     verificationToken: {
       type: String,
     },
+    ownReview: {
+      type: Schema.Types.ObjectId,
+      ref: "review",
+      default: null,
+    },
   },
   { versionKey: false, timestamps: true }
 );
