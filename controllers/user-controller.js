@@ -7,7 +7,7 @@ import {
   HttpError,
   cloudinary,
   sendEmail,
-  // letter,
+  letter,
   generateAvatar,
   generateToken,
 } from "../helpers/index.js";
@@ -16,30 +16,32 @@ import { ctrlWrapper } from "../decorators/index.js";
 const { BASE_URL } = process.env;
 
 const userRegister = async (req, res) => {
-  const { email, password } = req.body;
+  const { email, password, username } = req.body;
   const user = await User.findOne({ email });
-  if (user) throw HttpError(409, "Sorry! But this email already use.");
+  if (user) throw HttpError(409, "Sorry! But this email is already in use.");
 
   const hashPassword = await bcrypt.hash(password, 10);
   const verificationToken = nanoid();
+  const avatar = await generateAvatar(username);
+  // const token = await generateToken();
+
+  // ownReview !!!!!!!!!!!!!!!!!!
 
   const newUser = await User.create({
     ...req.body,
     password: hashPassword,
     verificationToken,
+    avatarURL: avatar,
+    // token,
   });
 
-  await generateAvatar(newUser);
+  const verifyEmail = {
+    to: newUser.email,
+    subject: "GooseTrack verification email",
+    html: letter(BASE_URL, verificationToken),
+  };
 
-  await generateToken(newUser);
-
-  // const verifyEmail = {
-  //   to: email,
-  //   subject: "GooseTrack Verify email",
-  //   html: letter(BASE_URL, verificationToken),
-  // };
-
-  // await sendEmail(verifyEmail);
+  await sendEmail(verifyEmail);
 
   res.status(201).json(newUser);
 };

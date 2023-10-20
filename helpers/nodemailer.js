@@ -1,7 +1,7 @@
 import nodemailer from "nodemailer";
-import "dotenv/config.js";
 
 const { META_PASSWORD, META_EMAIL } = process.env;
+
 const config = {
   host: "smtp.meta.ua",
   port: 465,
@@ -10,6 +10,7 @@ const config = {
     user: META_EMAIL,
     pass: META_PASSWORD,
   },
+  tls: { rejectUnauthorized: false },
 };
 
 const transporter = nodemailer.createTransport(config);
@@ -17,4 +18,5 @@ const transporter = nodemailer.createTransport(config);
 const sendEmail = (data) => {
   return transporter.sendMail({ ...data, from: META_EMAIL });
 };
+
 export default sendEmail;
