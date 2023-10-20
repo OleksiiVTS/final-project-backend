@@ -15,28 +15,32 @@ const listAllReviews = async (req, res) => {
 };
 
 const addReview = async (req, res) => {
-  const existingUser = await Review.findOne({ owner: req.user });
-  if (existingUser) {
+  const { _id } = req.user;
+  const existingReview = await Review.findOne({ owner: _id });
+  if (existingReview) {
     throw HttpError(409, "The user has already left a review");
   }
 
   const result = await Review.create({
     ...req.body,
-    owner: req.user,
+    owner: _id,
   });
-  const { _id, comment, rating, owner } = result;
-  const { avatarURL, username } = owner;
-  res.status(201).json({
-    _id,
-    comment,
-    rating,
-    owner: { avatarURL, username, _id: owner._id },
-  });
+  const newReview = {
+    _id: result._id,
+    comment: result.comment,
+    rating: result.rating,
+    owner: result.owner,
+  };
+
+  await User.findByIdAndUpdate(_id, { ownReview: newReview }, { new: true });
+
+  res.status(201).json(newReview);
 };
 
 const updateReview = async (req, res) => {
+  const { _id } = req.user;
   const result = await Review.findOneAndUpdate(
-    { owner: req.user },
+    { owner: _id },
     {
       ...req.body,
     },
@@ -61,11 +65,14 @@ const getUserReview = async (req, res) => {
 };
 
 const deleteUserReview = async (req, res) => {
-  const result = await Review.findOneAndDelete({ owner: req.user });
+  const { _id } = req.user;
+  const result = await Review.findOneAndDelete({ owner: _id });
 
   if (!result) {
     throw HttpError(404, "Review not found");
   }
+
+  await User.findOneAndUpdate({ _id }, { ownReview: null }, { new: true });
 
   res.json({ message: "Deleted successfully" });
 };

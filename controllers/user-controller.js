@@ -150,9 +150,7 @@ const getCurrent = async (req, res) => {
   delete user.createdAt;
   delete user.updatedAt;
   delete user.password;
-  // const { email } = req.user;
 
-  // const user = await User.findOne({ email }).populate("ownReview", "comment rating owner");
   res.status(200).json(user);
 };
 
