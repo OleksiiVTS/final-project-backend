@@ -16,25 +16,23 @@ import { ctrlWrapper } from "../decorators/index.js";
 const { BASE_URL } = process.env;
 
 const userRegister = async (req, res) => {
-  const { email, password, username } = req.body;
+  const { email, password } = req.body;
   const user = await User.findOne({ email });
   if (user) throw HttpError(409, "Sorry! But this email already use.");
 
   const hashPassword = await bcrypt.hash(password, 10);
   const verificationToken = nanoid();
 
-  const avatarURL = await generateAvatar(username);
-  const token = generateToken({ email });
-
   const newUser = await User.create({
     ...req.body,
     password: hashPassword,
-    avatarURL,
-    token,
     verificationToken,
   });
 
-  res.status(201).json(newUser);
+  await generateAvatar(newUser);
+
+  await generateToken(newUser);
+
   // const verifyEmail = {
   //   to: email,
   //   subject: "GooseTrack Verify email",
@@ -42,6 +40,8 @@ const userRegister = async (req, res) => {
   // };
 
   // await sendEmail(verifyEmail);
+
+  res.status(201).json(newUser);
 };
 
 const getVerification = async (req, res) => {
@@ -61,18 +61,20 @@ const getVerification = async (req, res) => {
 const userLogin = async (req, res) => {
   const { email, password } = req.body;
   const user = await User.findOne({ email });
-  if (!user) throw HttpError(401, "Email or password is wrong");
-
+  if (!user) {
+    throw HttpError(401, "Email or password is wrong");
+  }
   // if (!user.verify) {
   //   throw HttpError(401, `"User is not verify"`);
   // }
   const passwordCompare = await bcrypt.compare(password, user.password);
-  if (!passwordCompare) throw HttpError(401, "Email or password is wrong");
+  if (!passwordCompare) {
+    throw HttpError(401, "Email or password is wrong");
+  }
 
-  const token = generateToken({ email });
-  const updatedUser = await User.findOneAndUpdate({ email }, {token}, {new: true});
+  await generateToken(user);
 
-  res.status(200).json(updatedUser);
+  res.status(200).json(user);
 };
 
 const repeatVerify = async (req, res) => {
@@ -138,13 +140,11 @@ const updateUser = async (req, res) => {
 };
 
 const getCurrent = async (req, res) => {
-  const user = { ...req.user._doc };
-
-  delete user.createdAt;
-  delete user.updatedAt;
-  delete user.password;
-
-  res.status(200).json(user);
+  const { _id, username, email, phone, skype, birthday, theme, avatarURL } =
+    req.user;
+  res
+    .status(200)
+    .json({ _id, username, email, phone, skype, birthday, theme, avatarURL });
 };
 
 const userLogout = async (req, res) => {
