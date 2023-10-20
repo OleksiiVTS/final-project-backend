@@ -10,7 +10,7 @@ const listAllReviews = async (req, res) => {
   const result = await Review.find({}, "comment rating owner", {
     skip,
     limit,
-  }).populate("owner", "username, avatarURL");
+  }).populate("owner", "username avatarURL");
   res.json(result);
 };
 
@@ -52,7 +52,7 @@ const getUserReview = async (req, res) => {
   const result = await Review.findOne(
     { owner: req.user },
     "comment rating owner"
-  ).populate("owner", "username, avatarURL");
+  ).populate("owner", "username avatarURL");
 
   if (!result) {
     throw HttpError(404, "Review not found");
