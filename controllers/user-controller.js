@@ -26,7 +26,6 @@ const userRegister = async (req, res) => {
   // const token = await generateToken();
 
   // ownReview !!!!!!!!!!!!!!!!!!
-
   const newUser = await User.create({
     ...req.body,
     password: hashPassword,
@@ -34,7 +33,6 @@ const userRegister = async (req, res) => {
     avatarURL: avatar,
     // token,
   });
-
   const verifyEmail = {
     to: newUser.email,
     subject: "GooseTrack verification email",
@@ -43,21 +41,36 @@ const userRegister = async (req, res) => {
 
   await sendEmail(verifyEmail);
 
-  res.status(201).json(newUser);
+  res.status(201).json({ message: "registered successful" });
 };
 
 const getVerification = async (req, res) => {
   const verificationToken = req.params.verificationToken;
   const user = await User.findOne({ verificationToken });
-  if (!user) {
-    throw HttpError(404, "Sorry! User not found.");
-  }
-  const { _id: id } = user;
-  await User.findByIdAndUpdate(id, { verify: true, verificationToken: null });
 
-  res.status(200).json({
-    message: "Verification successful",
+  // if (!user) throw HttpError(404, "Sorry! User not found.");
+  if (!user) {
+    res.redirect(
+      302,
+      // `https://oleksiivts.github.io/final-project-frontend/`
+      `http://localhost:3000/final-project-frontend/`
+    );
+  }
+
+  const { _id: id } = user;
+  const token = await generateToken(id);
+
+  await User.findByIdAndUpdate(id, {
+    verify: true,
+    verificationToken: null,
+    token,
   });
+
+  res.redirect(
+    302,
+    // `https://oleksiivts.github.io/final-project-frontend/verified/${token}`
+    `http://localhost:3000/final-project-frontend/verified/${token}`
+  );
 };
 
 const userLogin = async (req, res) => {
@@ -74,7 +87,9 @@ const userLogin = async (req, res) => {
     throw HttpError(401, "Email or password is wrong");
   }
 
-  await generateToken(user);
+  const token = await generateToken(user._id);
+  user.token = token;
+  user.save;
 
   res.status(200).json(user);
 };
@@ -89,7 +104,7 @@ const repeatVerify = async (req, res) => {
   const verifyEmail = {
     to: user.email,
     subject: "GooseTrack Repeat verify email",
-    html: letter(BASE_URL, verificationToken),
+    html: letter(BASE_URL, user.verificationToken),
   };
   await sendEmail(verifyEmail);
   res.status(200).json({
