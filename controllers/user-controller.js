@@ -16,23 +16,25 @@ import { ctrlWrapper } from "../decorators/index.js";
 const { BASE_URL } = process.env;
 
 const userRegister = async (req, res) => {
-  const { email, password } = req.body;
+  const { email, password, username } = req.body;
   const user = await User.findOne({ email });
   if (user) throw HttpError(409, "Sorry! But this email already use.");
 
   const hashPassword = await bcrypt.hash(password, 10);
   const verificationToken = nanoid();
 
+  const avatarURL = await generateAvatar(username);
+  const token = generateToken({ email });
+
   const newUser = await User.create({
     ...req.body,
     password: hashPassword,
+    avatarURL,
+    token,
     verificationToken,
   });
 
-  await generateAvatar(newUser);
-
-  await generateToken(newUser);
-
+  res.status(201).json(newUser);
   // const verifyEmail = {
   //   to: email,
   //   subject: "GooseTrack Verify email",
@@ -40,8 +42,6 @@ const userRegister = async (req, res) => {
   // };
 
   // await sendEmail(verifyEmail);
-
-  res.status(201).json(newUser);
 };
 
 const getVerification = async (req, res) => {
@@ -61,20 +61,18 @@ const getVerification = async (req, res) => {
 const userLogin = async (req, res) => {
   const { email, password } = req.body;
   const user = await User.findOne({ email });
-  if (!user) {
-    throw HttpError(401, "Email or password is wrong");
-  }
+  if (!user) throw HttpError(401, "Email or password is wrong");
+
   // if (!user.verify) {
   //   throw HttpError(401, `"User is not verify"`);
   // }
   const passwordCompare = await bcrypt.compare(password, user.password);
-  if (!passwordCompare) {
-    throw HttpError(401, "Email or password is wrong");
-  }
+  if (!passwordCompare) throw HttpError(401, "Email or password is wrong");
 
-  await generateToken(user);
+  const token = generateToken({ email });
+  const updatedUser = await User.findOneAndUpdate({ email }, {token}, {new: true});
 
-  res.status(200).json(user);
+  res.status(200).json(updatedUser);
 };
 
 const repeatVerify = async (req, res) => {
