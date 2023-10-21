@@ -56,9 +56,11 @@ const getUserReview = async (req, res) => {
   ).populate("owner", "name, avatarURL");
 
   if (!result) {
-    throw HttpError(404, "Review not found");
+    res.status(200).json({});
   }
-  res.status(201).json(result);
+  if (result) {
+    res.status(200).json(result);
+  }
 };
 
 const deleteUserReview = async (req, res) => {
