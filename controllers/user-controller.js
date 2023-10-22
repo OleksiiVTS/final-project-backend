@@ -12,6 +12,8 @@ import {
   generateToken,
 } from "../helpers/index.js";
 import { ctrlWrapper } from "../decorators/index.js";
+import { Task } from "../models/usertask.js";
+import Review from "../models/review.js";
 
 const { BASE_URL } = process.env;
 
@@ -155,6 +157,18 @@ const userLogout = async (req, res) => {
   });
 };
 
+const deleteUser = async (req, res) => {
+  const { _id } = req.user;
+
+  await Review.findOneAndDelete({ owner: _id });
+
+  await Task.deleteMany({ owner: _id });
+
+  await User.findOneAndDelete({ _id });
+
+  res.json({ message: "Delete account success" });
+};
+
 export default {
   userRegister: ctrlWrapper(userRegister),
   userLogin: ctrlWrapper(userLogin),
@@ -163,4 +177,5 @@ export default {
   updateUser: ctrlWrapper(updateUser),
   getVerification: ctrlWrapper(getVerification),
   repeatVerify: ctrlWrapper(repeatVerify),
+  deleteUser: ctrlWrapper(deleteUser),
 };
