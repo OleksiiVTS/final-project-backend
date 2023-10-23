@@ -166,7 +166,7 @@ const deleteUser = async (req, res) => {
 
   await User.findOneAndDelete({ _id });
 
-  res.json({ message: "Delete account success" });
+  res.status(204).json({ message: "Delete account success" });
 };
 
 export default {
