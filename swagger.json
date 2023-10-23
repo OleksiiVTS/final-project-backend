@@ -267,9 +267,9 @@
           {
             "name": "date",
             "in": "query",
-            "example": "10",
-            "pattern": "^(1[0-2]|[1-9])$",
-            "description": "Month of year"
+            "example": "2023-10-15",
+            "pattern": "^(202[3-9]|20[3-9][0-9])-(0[1-9]|1[0-2])-(0[1-9]|[1-2][0-9]|3[0-1])$",
+            "description": "Date"
           }
         ],
         "security": [{ "Bearer": [] }],
@@ -294,7 +294,15 @@
           },
           "404": {
             "description": "Not found(404)",
-            "content": {}
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "example": [],
+                  "description": "Empty array"
+                }
+              }
+            }
           },
           "500": {
             "description": "Server error",
@@ -357,9 +365,21 @@
           }
         ],
         "responses": {
-          "204": {
+          "200": {
             "description": "Delete success",
-            "content": {}
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string",
+                      "example": "Task with id=taskId deleted"
+                    }
+                  }
+                }
+              }
+            }
           },
           "400": {
             "description": "Bad request (invalid request body)",
@@ -403,6 +423,26 @@
                 }
               }
             }
+          },
+          "404": {
+            "description": "Not found(404)",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string",
+                      "example": "id taskId not found"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Server error",
+            "content": {}
           }
         }
       }
@@ -1052,6 +1092,11 @@
                   "type": "string",
                   "description": "Owner's id",
                   "example": "owner_id-1"
+                },
+                "username": {
+                  "type": "string",
+                  "description": "Owner's name",
+                  "example": "Nadiia Moe"
                 },
                 "avatarURL": {
                   "type": "string",
