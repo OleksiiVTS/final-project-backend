@@ -20,4 +20,6 @@ authRouter.post("/logout", authenticate, authCtrl.userLogout);
 
 authRouter.get("/current", authenticate, authCtrl.getCurrent);
 
+authRouter.delete("/delete", authenticate, authCtrl.deleteUser);
+
 export default authRouter;
