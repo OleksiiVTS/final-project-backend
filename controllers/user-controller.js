@@ -2,12 +2,14 @@ import User from "../models/user.js";
 import bcrypt from "bcryptjs";
 import fs from "fs/promises";
 import { nanoid } from "nanoid";
+import jwt from "jsonwebtoken";
+
 import "dotenv/config.js";
 import {
   HttpError,
   cloudinary,
   sendEmail,
-  // letter,
+  letter,
   generateAvatar,
   generateToken,
 } from "../helpers/index.js";
@@ -15,49 +17,93 @@ import { ctrlWrapper } from "../decorators/index.js";
 import { Task } from "../models/usertask.js";
 import Review from "../models/review.js";
 
-const { BASE_URL } = process.env;
+const { BASE_URL, SECRET_CRITERIA, SECRET_REFERENCE } = process.env;
 
 const userRegister = async (req, res) => {
-  const { email, password } = req.body;
+  const { email, password, username, token } = req.body;
   const user = await User.findOne({ email });
-  if (user) throw HttpError(409, "Sorry! But this email already use.");
+  if (user) throw HttpError(409, "Sorry! But this email is already in use.");
 
   const hashPassword = await bcrypt.hash(password, 10);
   const verificationToken = nanoid();
+  const avatar = await generateAvatar(username);
+
+  // ----------Google Scenario--------
+  if (token) {
+    try {
+      const result = jwt.decode(token);
+      if (result[SECRET_CRITERIA] !== SECRET_REFERENCE) {
+        console.log("WARNING not equal criteria");
+        throw HttpError(400, '"token" is not allowed'); // no one gonna know, ha ha
+      }
+
+      const newUser = await User.create({
+        ...req.body,
+        password: hashPassword,
+        avatarURL: avatar,
+        verify: true,
+        verificationToken: null,
+      });
+
+      const TokenForDb = await generateToken(newUser._id);
+      newUser.token = TokenForDb;
+      newUser.save;
+
+      res.status(201).json({ message: "registered successful", user: newUser });
+      return; // !!!
+      //
+    } catch (e) {
+      console.log(e);
+      throw HttpError(400, '"token" is not allowed');
+    }
+  }
+
+  // ----------Common Email Scenario--------
 
   const newUser = await User.create({
     ...req.body,
     password: hashPassword,
     verificationToken,
+    avatarURL: avatar,
   });
+  const verifyEmail = {
+    to: newUser.email,
+    subject: "GooseTrack verification email",
+    html: letter(BASE_URL, verificationToken),
+  };
 
-  await generateAvatar(newUser);
+  await sendEmail(verifyEmail);
 
-  await generateToken(newUser);
-
-  // const verifyEmail = {
-  //   to: email,
-  //   subject: "GooseTrack Verify email",
-  //   html: letter(BASE_URL, verificationToken),
-  // };
-
-  // await sendEmail(verifyEmail);
-
-  res.status(201).json(newUser);
+  res.status(201).json({ message: "registered successful" });
 };
 
 const getVerification = async (req, res) => {
   const verificationToken = req.params.verificationToken;
   const user = await User.findOne({ verificationToken });
-  if (!user) {
-    throw HttpError(404, "Sorry! User not found.");
-  }
-  const { _id: id } = user;
-  await User.findByIdAndUpdate(id, { verify: true, verificationToken: null });
 
-  res.status(200).json({
-    message: "Verification successful",
+  // if (!user) throw HttpError(404, "Sorry! User not found.");
+  if (!user) {
+    res.redirect(
+      302,
+      `https://oleksiivts.github.io/final-project-frontend/`
+      // `http://localhost:3000/final-project-frontend/`
+    );
+  }
+
+  const { _id: id } = user;
+  const token = await generateToken(id);
+
+  await User.findByIdAndUpdate(id, {
+    verify: true,
+    verificationToken: null,
+    token,
   });
+
+  res.redirect(
+    302,
+    `https://oleksiivts.github.io/final-project-frontend/verified/${token}`
+    // `http://localhost:3000/final-project-frontend/verified/${token}`
+  );
 };
 
 const userLogin = async (req, res) => {
@@ -74,7 +120,9 @@ const userLogin = async (req, res) => {
     throw HttpError(401, "Email or password is wrong");
   }
 
-  await generateToken(user);
+  const token = await generateToken(user._id);
+  user.token = token;
+  user.save;
 
   res.status(200).json(user);
 };
@@ -89,7 +137,7 @@ const repeatVerify = async (req, res) => {
   const verifyEmail = {
     to: user.email,
     subject: "GooseTrack Repeat verify email",
-    html: letter(BASE_URL, verificationToken),
+    html: letter(BASE_URL, user.verificationToken),
   };
   await sendEmail(verifyEmail);
   res.status(200).json({

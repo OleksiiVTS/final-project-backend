@@ -63,6 +63,7 @@ const userSchema = new Schema(
     },
     token: {
       type: String,
+      default: null,
     },
     verify: {
       type: Boolean,
@@ -96,6 +97,7 @@ export const authRegisterSchema = Joi.object({
     "any.required": "The password field is required.",
     "string.empty": "The password must not be empty.",
   }),
+  token: Joi.string(),
 });
 
 export const authLoginSchema = Joi.object({
