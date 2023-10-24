@@ -2,6 +2,8 @@ import User from "../models/user.js";
 import bcrypt from "bcryptjs";
 import fs from "fs/promises";
 import { nanoid } from "nanoid";
+import jwt from "jsonwebtoken";
+
 import "dotenv/config.js";
 import {
   HttpError,
@@ -15,25 +17,54 @@ import { ctrlWrapper } from "../decorators/index.js";
 import { Task } from "../models/usertask.js";
 import Review from "../models/review.js";
 
-const { BASE_URL } = process.env;
+const { BASE_URL, SECRET_CRITERIA, SECRET_REFERENCE } = process.env;
 
 const userRegister = async (req, res) => {
-  const { email, password, username } = req.body;
+  const { email, password, username, token } = req.body;
   const user = await User.findOne({ email });
   if (user) throw HttpError(409, "Sorry! But this email is already in use.");
 
   const hashPassword = await bcrypt.hash(password, 10);
   const verificationToken = nanoid();
   const avatar = await generateAvatar(username);
-  // const token = await generateToken();
 
-  // ownReview !!!!!!!!!!!!!!!!!!
+  // ----------Google Scenario--------
+  if (token) {
+    try {
+      const result = jwt.decode(token);
+      if (result[SECRET_CRITERIA] !== SECRET_REFERENCE) {
+        console.log("WARNING not equal criteria");
+        throw HttpError(400, '"token" is not allowed'); // no one gonna know, ha ha
+      }
+
+      const newUser = await User.create({
+        ...req.body,
+        password: hashPassword,
+        avatarURL: avatar,
+        verify: true,
+        verificationToken: null,
+      });
+
+      const TokenForDb = await generateToken(newUser._id);
+      newUser.token = TokenForDb;
+      newUser.save;
+
+      res.status(201).json({ message: "registered successful", user: newUser });
+      return; // !!!
+      //
+    } catch (e) {
+      console.log(e);
+      throw HttpError(400, '"token" is not allowed');
+    }
+  }
+
+  // ----------Common Email Scenario--------
+
   const newUser = await User.create({
     ...req.body,
     password: hashPassword,
     verificationToken,
     avatarURL: avatar,
-    // token,
   });
   const verifyEmail = {
     to: newUser.email,
