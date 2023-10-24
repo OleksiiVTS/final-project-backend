@@ -20,7 +20,8 @@ import Review from "../models/review.js";
 const { BASE_URL, SECRET_CRITERIA, SECRET_REFERENCE } = process.env;
 
 const userRegister = async (req, res) => {
-  const { email, password, username, token } = req.body;
+  const { email, password, username } = req.body;
+  const token = req.body.token;
   const user = await User.findOne({ email });
   if (user) throw HttpError(409, "Sorry! But this email is already in use.");
 
