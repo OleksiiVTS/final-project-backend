@@ -158,10 +158,12 @@ const userLogout = async (req, res) => {
 };
 
 const deleteUser = async (req, res) => {
-  const { email } = req.body;
+  const { email } = req.params;
   const { _id } = req.user;
-
+  
+  console.log('email: ', email);
   if (email !== req.user.email) throw HttpError(400, "Invalid email");
+  console.log('deleted');
 
   await Review.findOneAndDelete({ owner: _id });
 
