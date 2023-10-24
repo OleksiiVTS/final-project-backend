@@ -1,4 +1,5 @@
 import {
+  authDeleteSchema,
   authLoginSchema,
   authRegisterSchema,
   authUpdateSchema,
@@ -11,6 +12,7 @@ import { validateBody } from "../../decorators/index.js";
 export const authRegisterValidate = validateBody(authRegisterSchema);
 export const authLoginValidate = validateBody(authLoginSchema);
 export const authUpdateValidate = validateBody(authUpdateSchema);
+export const authDeleteValidate = validateBody(authDeleteSchema);
 
 export const authVerify = validateBody(userVerifySchema);
 

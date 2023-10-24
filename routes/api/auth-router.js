@@ -1,5 +1,5 @@
 import express from "express";
-import { authVerify, authLoginValidate, authRegisterValidate, authUpdateValidate } from "../../middleware/validation/validation.js";
+import { authVerify, authLoginValidate, authRegisterValidate, authUpdateValidate, authDeleteValidate } from "../../middleware/validation/validation.js";
 import authenticate from "../../middleware/validation/authenticate.js";
 import authCtrl from "../../controllers/user-controller.js";
 import { upload } from "../../middleware/validation/upload.js";
@@ -20,6 +20,6 @@ authRouter.post("/logout", authenticate, authCtrl.userLogout);
 
 authRouter.get("/current", authenticate, authCtrl.getCurrent);
 
-authRouter.delete("/delete", authenticate, authCtrl.deleteUser);
+authRouter.delete("/delete", authDeleteValidate, authenticate, authCtrl.deleteUser);
 
 export default authRouter;
