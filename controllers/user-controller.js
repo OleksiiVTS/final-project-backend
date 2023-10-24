@@ -201,13 +201,11 @@ const getCurrent = async (req, res) => {
 const userLogout = async (req, res) => {
   const { _id } = req.user;
   await User.findByIdAndUpdate(_id, { token: null });
-  res.status(204).json({
-    message: `"Logout success"`,
-  });
+  res.status(204).send()
 };
 
 const deleteUser = async (req, res) => {
-  const { email } = req.body;
+  const { email } = req.params;
   const { _id } = req.user;
 
   if (email !== req.user.email) throw HttpError(400, "Invalid email");
@@ -218,7 +216,7 @@ const deleteUser = async (req, res) => {
 
   await User.findOneAndDelete({ _id });
 
-  res.status(204);
+  res.status(204).send()
 };
 
 export default {
