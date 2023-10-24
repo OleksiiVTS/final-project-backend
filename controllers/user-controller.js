@@ -85,8 +85,8 @@ const getVerification = async (req, res) => {
   if (!user) {
     res.redirect(
       302,
-      // `https://oleksiivts.github.io/final-project-frontend/`
-      `http://localhost:3000/final-project-frontend/`
+      `https://oleksiivts.github.io/final-project-frontend/`
+      // `http://localhost:3000/final-project-frontend/`
     );
   }
 
@@ -101,8 +101,8 @@ const getVerification = async (req, res) => {
 
   res.redirect(
     302,
-    // `https://oleksiivts.github.io/final-project-frontend/verified/${token}`
-    `http://localhost:3000/final-project-frontend/verified/${token}`
+    `https://oleksiivts.github.io/final-project-frontend/verified/${token}`
+    // `http://localhost:3000/final-project-frontend/verified/${token}`
   );
 };
 
