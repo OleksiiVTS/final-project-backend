@@ -1,31 +1,48 @@
-## GoIT Node.js Course Template Homework
+# GooseTrack Backend
 
-Виконайте форк цього репозиторію для виконання домашніх завдань (2-6)
-Форк створить репозиторій на вашому http://github.com
+Welcome to the GooseTrack backend API! This API delivers robust capabilities for the organization and retrieval of tasks and reviews, enabling you to easily optimize your workflow.
 
-Додайте ментора до колаборації
+## Description
 
-Для кожної домашньої роботи створюйте свою гілку.
+The GooseTrack backend API provides an extensive array of functionalities for assisting you in staying well-organized and monitoring your tasks and reviews. Using this API, you can:
 
-- hw02
-- hw03
-- hw04
-- hw05
-- hw06
+Retrieve tasks
+Create new tasks
+Update existing tasks
+Delete tasks
+Access all your valuable reviews
+Create and update reviews
+Maintain control by removing unwanted reviews
+Certain endpoints necessitate authentication to ensure the security and confidentiality of your data. Our API uses JSON Web Tokens (JWT) as the authentication mechanism, ensuring a robust and dependable authentication process.
 
-Кожна нова гілка для др повинна робитися з master
+## Swagger
 
-Після того, як ви закінчили виконувати домашнє завдання у своїй гілці, необхідно зробити пулл-реквест (PR). Потім додати ментора для рев'ю коду. Тільки після того, як ментор заапрувить PR, ви можете виконати мердж гілки з домашнім завданням у майстер.
+For comprehensive documentation covering the API endpoints, request and response formats, as well as authentication prerequisites, please consult the included Swagger specification file, swagger.json.
+<a href='https://final-project-backend-6uyr.onrender.com/api/docs'>Swagger documentation</a>
 
-Уважно читайте коментарі ментора. Виправте зауваження та зробіть коміт у гілці з домашнім завданням. Зміни підтягнуться у PR автоматично після того, як ви відправите коміт з виправленнями на github
-Після виправлення знову додайте ментора на рев'ю коду.
+## For Use:
 
-- При здачі домашньої роботи є посилання на PR
-- JS-код чистий та зрозумілий, для форматування використовується Prettier
+1. Clone This repository to your local machine.
+2. Install dependencies using $ npm install.
+3. Create .envfile and add your environment variables:
 
-### Команди:
+   - DB_HOST: your MongoDB connection string;
+   - PORT: port of this program;
+   - JWT_SECRET: secret string for signing reset token;
 
-- `npm start` &mdash; старт сервера в режимі production
-- `npm run start:dev` &mdash; старт сервера в режимі розробки (development)
-- `npm run lint` &mdash; запустити виконання перевірки коду з eslint, необхідно виконувати перед кожним PR та виправляти всі помилки лінтера
-- `npm lint:fix` &mdash; та ж перевірка лінтера, але з автоматичними виправленнями простих помилок
+   - CLOUDINARY_CLOUD_NAME: cloudnery api name;
+   - CLOUDINARY_API_KAY: cloudnery api key;
+   - CLOUDINARY_API_SECRET: cloudnery api secret;
+   - CLOUDINARY_URL_CLOUDINARY_URL: cloudnery URL;
+
+   - META_PASSWORD: password email service;
+   - META_EMAIL: user email service;
+
+   - BASE_URL: URL Front End part.
+
+4. Start using:
+
+   - $ npm run start:dev - start the server in production mode;
+   - $ npm start - start the server in development mode.
+
+   <a href='https://github.com/OleksiiVTS/final-project-frontend'>FrontEnd Repository</a>
