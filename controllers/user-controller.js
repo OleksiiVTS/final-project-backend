@@ -158,7 +158,10 @@ const userLogout = async (req, res) => {
 };
 
 const deleteUser = async (req, res) => {
+  const { email } = req.body;
   const { _id } = req.user;
+
+  if (email !== req.user.email) throw HttpError(400, "Invalid email");
 
   await Review.findOneAndDelete({ owner: _id });
 
@@ -166,7 +169,7 @@ const deleteUser = async (req, res) => {
 
   await User.findOneAndDelete({ _id });
 
-  res.status(204).json({ message: "Delete account success" });
+  res.status(204);
 };
 
 export default {
