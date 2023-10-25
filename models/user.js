@@ -97,7 +97,9 @@ export const authRegisterSchema = Joi.object({
     "any.required": "The password field is required.",
     "string.empty": "The password must not be empty.",
   }),
-  token: Joi.string(),
+  token: Joi.string().messages({
+    "string.base": '"token" is not allowed',
+  }),
 });
 
 export const authLoginSchema = Joi.object({
