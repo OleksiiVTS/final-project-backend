@@ -14,7 +14,7 @@
 Створювати та оновлювати відгуки;
 Зберігайти контроль, видаляючи небажані відгуки.
 
-Певні кінцеві точки вимагають аутентифікації для забезпечення безпеки та конфіденційності ваших даних. Наш API використовує JSON Web Tokens (JWT) як механізм аутентифікації, забезпечуючи надійний і надійний процес аутентифікації.
+Певні кінцеві точки вимагають аутентифікації для забезпечення безпеки та конфіденційності ваших даних. Наш API використовує JSON Web Tokens (JWT) як механізм аутентифікації, забезпечуючи стійкий і надійний процес аутентифікації.
 
 ## Swagger
 
@@ -25,25 +25,28 @@
 
 1. Клонувати Цей репозиторій на ваш компютер.
 2. Встановити залежності за допомогою команди $ npm install.
-3. Створити .envfile та додайти змінні середовища:
+3. Створити .env file та додайти змінні середовища:
 
    - DB_HOST: ваш рядок з'єднання MongoDB;
    - PORT: порт цієї програми;
    - JWT_SECRET: секретний рядок для утворення token;
 
-   - CLOUDINARY_CLOUD_NAME: cloudnery api name;
-   - CLOUDINARY_API_KAY: cloudnery api key;
-   - CLOUDINARY_API_SECRET: cloudnery api secret;
-   - CLOUDINARY_URL_CLOUDINARY_URL: cloudnery URL;
+   - CLOUDINARY_CLOUD_NAME: cloudinary api name;
+   - CLOUDINARY_API_KAY: cloudinary api key;
+   - CLOUDINARY_API_SECRET: cloudinary api secret;
+   - CLOUDINARY_URL_CLOUDINARY_URL: cloudinary URL;
 
    - META_PASSWORD: пароль поштової скрині;
    - META_EMAIL: пошта, яку використовуватимете для відправки листів;
 
    - BASE_URL: URL Front End частини.
 
+     - SECRET_CRITERIA: крітерій для захисту google авторізації;
+     - SECRET_REFERENCE: значення крітерія;
+
 4. Для початку використання введіть в терміналі:
 
-   - $ npm run start:dev — старт сервера в режимі production;
-   - $ npm start — старт сервера в режимі розробки (development).
+   - $ npm run start:dev — старт сервера в режимі розробки (development);
+   - $ npm start — старт сервера в режимі production.
 
    <a href='https://github.com/OleksiiVTS/final-project-frontend'>FrontEnd Репозиторій</a>
