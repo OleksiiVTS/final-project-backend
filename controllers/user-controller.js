@@ -12,6 +12,7 @@ import {
   letter,
   generateAvatar,
   generateToken,
+  normalizeUser,
 } from "../helpers/index.js";
 import { ctrlWrapper } from "../decorators/index.js";
 import { Task } from "../models/usertask.js";
@@ -110,6 +111,7 @@ const getVerification = async (req, res) => {
 const userLogin = async (req, res) => {
   const { email, password } = req.body;
   const user = await User.findOne({ email });
+  console.log("user: ", user);
 
   if (!user) throw HttpError(401, "Email or password is wrong");
 
@@ -122,7 +124,9 @@ const userLogin = async (req, res) => {
   user.token = token;
   user.save;
 
-  res.status(200).json(user);
+  const normalizedUser = normalizeUser({ ...user._doc });
+
+  res.status(200).json({ user: normalizedUser });
 };
 
 const repeatVerify = async (req, res) => {
@@ -186,13 +190,7 @@ const updateUser = async (req, res) => {
 };
 
 const getCurrent = async (req, res) => {
-  const user = { ...req.user._doc };
-
-  delete user.createdAt;
-  delete user.updatedAt;
-  delete user.verificationToken;
-  delete user.verify;
-  delete user.public_id;
+  const user = normalizeUser({ ...req.user._doc });
 
   res.status(200).json({ user });
 };

@@ -675,9 +675,60 @@
       "LoginResponse": {
         "type": "object",
         "properties": {
-          "token": {
-            "type": "string",
-            "example": "Token"
+          "user": {
+            "type": "object",
+            "properties": {
+              "_id": {
+                "type": "string",
+                "description": "User's id",
+                "example": "User_id-1"
+              },
+              "username": {
+                "type": "string",
+                "description": "User's name",
+                "example": "Nadiia Moe"
+              },
+              "email": {
+                "type": "string",
+                "description": "User's email",
+                "format": "email",
+                "example": "nadiia.moe.12@mail.com",
+                "pattern": "^[\\w-\\.]+@([\\w-]+\\.)+[\\w-]{2,4}$"
+              },
+              "password": {
+                "type": "string",
+                "description": "User's password",
+                "example": "nadiiamoe_password123"
+              },
+              "phone": {
+                "type": "string",
+                "description": "User's phone",
+                "pattern": "/^+380d{9}$/"
+              },
+              "skype": {
+                "type": "string",
+                "description": "User's skype number",
+                "maxLength": 16
+              },
+              "birthday": {
+                "type": "string",
+                "description": "User's birthday"
+              },
+              "avatarURL": {
+                "type": "string",
+                "example": "http://avatar_link.com"
+              },
+              "theme": {
+                "type": "string",
+                "description": "User's UI theme",
+                "enum": ["dark", "light"]
+              },
+              "token": {
+                "type": "string",
+                "description": "Access token",
+                "example": "token"
+              }
+            }
           }
         }
       },
