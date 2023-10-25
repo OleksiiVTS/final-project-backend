@@ -131,6 +131,9 @@ const userLogin = async (req, res) => {
 const repeatVerify = async (req, res) => {
   const { email } = req.body;
   const user = await User.findOne({ email });
+
+  if (!user) throw HttpError(400, "Email not found");
+
   if (user.verify) throw HttpError(400, "Verification has already been passed");
 
   const verifyEmail = {
