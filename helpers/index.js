@@ -6,3 +6,4 @@ export { default as letter } from "./mail.js";
 export { default as generateAvatar } from "./generateAvatar.js";
 export { default as generateToken } from "./generateToken.js";
 export { default as validateStartEndTime } from "./validateStartEndTime.js";
+export { default as normalizeUser } from "./normalizeUser.js";
