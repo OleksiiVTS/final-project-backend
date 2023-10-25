@@ -111,7 +111,6 @@ const getVerification = async (req, res) => {
 const userLogin = async (req, res) => {
   const { email, password } = req.body;
   const user = await User.findOne({ email });
-  console.log("user: ", user);
 
   if (!user) throw HttpError(401, "Email or password is wrong");
 
@@ -192,7 +191,7 @@ const updateUser = async (req, res) => {
 const getCurrent = async (req, res) => {
   const user = normalizeUser({ ...req.user._doc });
 
-  res.status(200).json({ user });
+  res.status(200).json({ ...user });
 };
 
 const userLogout = async (req, res) => {
