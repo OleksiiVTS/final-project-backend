@@ -267,9 +267,9 @@
           {
             "name": "date",
             "in": "query",
-            "example": "2023-10-15",
+            "example": "2023-10-26",
             "pattern": "^(202[3-9]|20[3-9][0-9])-(0[1-9]|1[0-2])-(0[1-9]|[1-2][0-9]|3[0-1])$",
-            "description": "Date"
+            "description": "Date(Year-Month-Day)"
           }
         ],
         "security": [{ "Bearer": [] }],
@@ -648,9 +648,9 @@
       "RegistrationResponse": {
         "type": "object",
         "properties": {
-          "token": {
+          "message": {
             "type": "string",
-            "example": "token"
+            "example": "Registration success"
           }
         }
       },
@@ -782,39 +782,51 @@
       "CurrentResponse": {
         "type": "object",
         "properties": {
-          "username": {
-            "type": "string",
-            "description": "User's name"
-          },
-          "email": {
-            "type": "string",
-            "description": "User's email",
-            "format": "email",
-            "pattern": "^[\\w-\\.]+@([\\w-]+\\.)+[\\w-]{2,4}$"
-          },
-          "phone": {
-            "type": "string",
-            "description": "User's phone",
-            "pattern": "/^+380d{9}$/"
-          },
-          "skype": {
-            "type": "string",
-            "description": "User's skype number",
-            "maxLength": 16
-          },
-          "birthday": {
-            "type": "string",
-            "description": "User's birthday"
-          },
-          "theme": {
-            "type": "string",
-            "description": "User's UI theme",
-            "enum": ["dark", "light"]
-          },
-          "avatarURL": {
-            "type": "string",
-            "description": "Avatar link",
-            "example": "http://avatar_link.com"
+          "user": {
+            "type": "object",
+            "description": "Current user",
+            "properties": {
+              "_id": {
+                "type": "string",
+                "description": "User's id",
+                "example": "User_id-1"
+              },
+              "username": {
+                "type": "string",
+                "description": "User's name"
+              },
+              "email": {
+                "type": "string",
+                "description": "User's email",
+                "format": "email",
+                "pattern": "^[\\w-\\.]+@([\\w-]+\\.)+[\\w-]{2,4}$"
+              },
+              "phone": {
+                "type": "string",
+                "description": "User's phone",
+                "pattern": "/^+380d{9}$/"
+              },
+              "skype": {
+                "type": "string",
+                "description": "User's skype number",
+                "maxLength": 16
+              },
+              "birthday": {
+                "type": "string",
+                "description": "User's birthday",
+                "example": "2023-10-26"
+              },
+              "theme": {
+                "type": "string",
+                "description": "User's UI theme",
+                "enum": ["dark", "light"]
+              },
+              "avatarURL": {
+                "type": "string",
+                "description": "Avatar link",
+                "example": "http://avatar_link.com"
+              }
+            }
           }
         }
       },

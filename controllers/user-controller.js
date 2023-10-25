@@ -110,16 +110,13 @@ const getVerification = async (req, res) => {
 const userLogin = async (req, res) => {
   const { email, password } = req.body;
   const user = await User.findOne({ email });
-  if (!user) {
-    throw HttpError(401, "Email or password is wrong");
-  }
-  // if (!user.verify) {
-  //   throw HttpError(401, `"User is not verify"`);
-  // }
+
+  if (!user) throw HttpError(401, "Email or password is wrong");
+
+  if (!user.verify) throw HttpError(401, "Email not confirmed");
+
   const passwordCompare = await bcrypt.compare(password, user.password);
-  if (!passwordCompare) {
-    throw HttpError(401, "Email or password is wrong");
-  }
+  if (!passwordCompare) throw HttpError(401, "Email or password is wrong");
 
   const token = await generateToken(user._id);
   user.token = token;
@@ -131,9 +128,7 @@ const userLogin = async (req, res) => {
 const repeatVerify = async (req, res) => {
   const { email } = req.body;
   const user = await User.findOne({ email });
-  if (user.verify) {
-    throw HttpError(400, "Verification has already been passed");
-  }
+  if (user.verify) throw HttpError(400, "Verification has already been passed");
 
   const verifyEmail = {
     to: user.email,
@@ -191,17 +186,21 @@ const updateUser = async (req, res) => {
 };
 
 const getCurrent = async (req, res) => {
-  const { _id, username, email, phone, skype, birthday, theme, avatarURL } =
-    req.user;
-  res
-    .status(200)
-    .json({ _id, username, email, phone, skype, birthday, theme, avatarURL });
+  const user = { ...req.user._doc };
+
+  delete user.createdAt;
+  delete user.updatedAt;
+  delete user.verificationToken;
+  delete user.verify;
+  delete user.public_id;
+
+  res.status(200).json({ user });
 };
 
 const userLogout = async (req, res) => {
   const { _id } = req.user;
   await User.findByIdAndUpdate(_id, { token: null });
-  res.status(204).send()
+  res.status(204).send();
 };
 
 const deleteUser = async (req, res) => {
@@ -216,7 +215,7 @@ const deleteUser = async (req, res) => {
 
   await User.findOneAndDelete({ _id });
 
-  res.status(204).send()
+  res.status(204).send();
 };
 
 export default {
